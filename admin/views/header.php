@@ -48,8 +48,7 @@
         </form>
 
         <div class="text-end">
-          <button type="button" class="btn btn-light text-dark me-2">Login</button>
-          <button type="button" class="btn btn-primary">Sign-up</button>
+          <a href="/logout" class="btn btn-light text-dark me-2">Вийти</a>
         </div>
       </div>
     </div>
