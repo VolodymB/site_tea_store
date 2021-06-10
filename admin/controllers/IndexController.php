@@ -1,25 +1,34 @@
 <?php
     require_once 'models/User.php';
+    
 
  class IndexController extends Controller{
-    
+
+    public $user;
+
+
+    public function __construct(){
+        $this->view=new View();
+        $this->model=new Model();
+        $this->user=new User();
+    }
+
     public function index(){
-        $user=new User();
-        if($user->admin()){            
+        if($this->user->admin()){            
             return $this->view->render('index');            
         }else{
             $this->login();
         }
+
         
     }
 
     public function login(){
         if(isset($_POST['email']) && !empty($_POST['email'])){
            if(isset($_POST['password']) && !empty($_POST['password'])){
-                $user=new User();
                 $email=$_POST['email'];
                 $password=$_POST['password'];
-                if($user->login($email,$password)){
+                if($this->user->login($email,$password)){
                     header("Location:/index");
                 }
            }
@@ -28,8 +37,7 @@
     }
 
     public function logout(){
-        $user=new User();
-        $user->logout();
+        $this->user->logout();
         header("Location:/login");
     }
  }
