@@ -1,4 +1,5 @@
 <?php
+
 class ProductAdmin extends Model{
 
     public function getList(){
@@ -7,6 +8,24 @@ class ProductAdmin extends Model{
         $result=$select->fetchAll();
         return $result;
     }
+
+    public function view($id){
+        echo 'view';
+    }
+
+    public function create(){
+        echo 'create';
+    }
+
+    public function update($id){
+        echo 'update';
+    }
+
+    public function delete($id){
+        echo 'delete';
+    }
+
+
 
 
 

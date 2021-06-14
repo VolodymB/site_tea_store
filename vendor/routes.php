@@ -12,6 +12,13 @@ $routes=array(
     '/remove_basket'=>'basket/remove',
     '/filter'=>'product/filter',
     '/login'=>'index/login',
-    '/logout'=>'index/logout'
+    '/logout'=>'index/logout',
+    '/update'=>'product/update',
+    '/delete'=>'product/delete',
+    '/add_product'=>'product/create',
+    
+    
+
+
 );
 ?>

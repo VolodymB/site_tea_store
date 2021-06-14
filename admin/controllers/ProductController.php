@@ -1,6 +1,7 @@
 <?php 
     require_once 'models/User.php';
     require_once 'models/ProductAdmin.php';
+    // require_once './catalog/controllers/ProductController.php';
 
 class ProductController extends Controller{
     public $user;
@@ -24,20 +25,26 @@ class ProductController extends Controller{
 
     }
 
-    public function view(){
+    public function view($data){
+        $product=new ProductAdmin();
+       return $product->view($data['id']);
 
     }
 
     public function create(){
+        $product=new ProductAdmin();
+       return $product->create();
 
     }
 
     public function update(){
-
+        $product=new ProductAdmin();
+       return $product->update();
     }
 
     public function delete(){
-
+        $product=new ProductAdmin();
+        $product->delete();
     }
 
 
