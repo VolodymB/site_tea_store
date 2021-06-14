@@ -33,7 +33,7 @@ class ProductController extends Controller{
 
     public function create(){
         $product=new ProductAdmin();
-       return $product->create();
+       return $this->view->render('form');
 
     }
 
