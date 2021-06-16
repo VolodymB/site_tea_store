@@ -1,6 +1,14 @@
 <?php
 
 class ProductAdmin extends Model{
+    
+    public $id;
+    public $name;
+    public $year;
+    public $units;
+    public $description;
+    public $categories=array();
+
 
     public function getList(){
         $sql="SELECT `product`.`id`,`product`.`name`,`product`.`year`,`status_product`.`name` as 'status' FROM `product` LEFT JOIN `status_product` ON `product`.`status_id`=`status_product`.`id`";
@@ -9,16 +17,124 @@ class ProductAdmin extends Model{
         return $result;
     }
 
-    public function view($id){
+    public function getItem($id){
         echo 'view';
     }
 
-    public function create(){
-        echo 'create';
+    public function save(array $data){
+        if(!empty($data)){ 
+            // echo '<pre>';
+            // var_dump($data);
+            // echo '</pre>';
+            // die;           
+            if($this->validation($data)){
+                /**
+                 * 1 запис таблиці product - повертаємо product_id 
+                 * 2 запис таблиці product_unit (з параметром product_id) та даними з масиву units
+                 * 3 запис таблиці product_category 
+                 * повертається true
+                 */
+                $sql="INSERT INTO `product`(`name`, `year`, `description`, `status_id`) VALUES (:product_name,:product_year,:product_description,:status_id)";
+                $array=array(
+                    'product_name'=>$this->name,
+                    'product_year'=>$this->year,
+                    'product_description'=>$this->description,
+                    'status_id'=>$this->status
+                );
+                $select=$this->db->prepare($sql);
+                if($select->execute($array)){
+                    $this->id=$this->db->lastInsertId();
+                    $sql="INSERT INTO `product_unit`(`product_id`, `unit_id`, `price`, `quantity`) VALUES (:product_id,:unit_id,:price,:quantity)";
+                    foreach($this->units as $unit){
+                       $array=array(
+                        'product_id'=>$this->id,
+                        'unit_id'=>$unit['id'],
+                        'price'=>$unit['price'],
+                        'quantity'=>$unit['quantity']
+                    );
+                        $select=$this->db->prepare($sql);
+                        if($select->execute($array)){
+                                                        
+                        }
+                    }    
+                        $sql="INSERT INTO `product_category`(`category_id`, `product_id`) VALUES (:category_id,:product_id)";
+                            foreach($this->categories as $category){
+                              $data=array(
+                                'category_id'=>$category,
+                                'product_id'=>$this->id
+                            );
+                                $select=$this->db->prepare($sql);
+                                if($select->execute($data)){
+                                    echo "Ваш товар збережено";
+                                } 
+                            }
+                    
+
+                    
+
+                }
+                
+            }
+        }
+        
     }
 
-    public function update($id){
-        echo 'update';
+    // array(6) {
+    //     ["name"]=>
+    //     string(5) "Apple"
+    //     ["year"]=>
+    //     string(4) "2019"
+    //     ["status"]=>
+    //     string(1) "1"
+    //     ["description"]=>
+    //     string(5) "apple"
+    //     ["units"]=>
+    //     array(1) {
+    //       [0]=>
+    //       array(3) {
+    //         ["id"]=>
+    //         string(1) "1"
+    //         ["price"]=>
+    //         string(0) ""
+    //         ["quantity"]=>
+    //         string(2) "12"
+    //       }
+    //     }
+    //     ["categories"]=>
+    //     array(1) {
+    //       [0]=>
+    //       string(1) "1" 
+    public function validation(array $data){
+        if(isset($data['name']) && !empty($data['name'])){
+            $this->name=$data['name'];
+        }else{
+            return false;
+        }
+        if(isset($data['year']) && !empty($data['year'])){
+            $this->year=$data['year'];
+        }else{
+            return false;
+        }
+        if(isset($data['status']) && !empty($data['status'])){
+            $this->status=$data['status'];
+        }else{
+            return false;
+        }
+        if(isset($data['description']) && !empty($data['description'])){
+            $this->description=$data['description'];
+        }
+        if(isset($data['units']) && !empty($data['units'])){
+            $this->units=$data['units'];
+        }else{
+            return false;
+        }
+        if(isset($data['categories']) && !empty($data['categories'])){
+            $this->categories=$data['categories'];
+        }else{
+            return false;
+        }
+        return true;
+
     }
 
     public function delete($id){

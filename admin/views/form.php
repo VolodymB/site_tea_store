@@ -6,7 +6,7 @@
 - категорія товару(мінімально 1 категорія)
  -->
 <div class="container">
-  <form action="" method="POST" class="needs-validation" novalidate>
+  <form action="/add_product" method="POST" class="needs-validation" novalidate>
     <div class="row g-3" >
       <div class="col-sm-8">
         <label for="name" class="form-label">Назва товару</label>
@@ -26,73 +26,59 @@
         </div>
         <div class="col-12">
         <label for="status" class="form-label">Наявність</label>
-        <div class="input-group has-validation">
-          <select name="status" id="status" class="form-select">
-              <option value="1">В наявності</option>
-              <option value="2">Товар відсутній</option>
-              <option value="3">Під замовлення</option>              
-          </select>
+        <div class="input-group has-validation">         
+          <select name="status" id="status" class="form-select"> 
+              <?php foreach($data['status'] as $item_status): ?>      
+              <option value="<?=$item_status['id']?>"><?=$item_status['name']?></option>                     
+              <?php endforeach; ?>
+          </select>          
           <div class="invalid-feedback">Введіть статус</div>
+        </div>
         </div>
         <div class="col-12">
           <label for="description" class="form-label">Опис товару</label>
-          <textarea class="form-control" id="description" rows="5"></textarea>
+          <textarea class="form-control" name='description' id="description" rows="5"></textarea>
         </div>
-      </div>
     </div>
     <br>
-    <div class="col-sm-8">
+    <!-- початок одниця виміру з ціною -->
+    <?php $row=0 ?>
+    <div class="col-sm-5">
         <label for="unit" class="form-label">Одиниця виміру</label>
         <div class="input-group has-validation">
-          <select name="unit" id="unit" class="form-select">
-              <option value="1">шт.</option>
-              <option value="2">0,1</option>
-              <option value="3">0,5</option>              
+          <select name="units[<?=$row?>][id]" id="unit" class="form-select">
+              <?php foreach($data['units'] as $item_unit): ?>
+              <option value="<?=$item_unit['id']?>"><?=$item_unit['name']?></option>
+              <?php endforeach; ?>             
           </select>
           <div class="invalid-feedback">Оберіть одиницю виміру</div>
         </div>
+        </div>
         <div class="col-sm-4">
-        <label for="price" class="form-label">Вартість</label>
-        <div class="input-group has-validation">
-          <input
-            type="number" class="form-control" id="price" name='price' /> грн
-          <div class="invalid-feedback">Введіть ціну</div>
+          <label for="price" class="form-label">Вартість</label>
+          <div class="input-group has-validation">
+            <input type="number" class="form-control" id="price" name='units[<?=$row?>][price]' min='0' step='0.50'/> грн
+            <div class="invalid-feedback">Введіть ціну</div>
           </div>
         </div>
+        <div class="col-sm-3">
+          <label for="quantity" class="form-label">Кількість</label>
+          <div class="input-group has-validation">
+            <input type="number" class="form-control" id="quantity" name='units[<?=$row?>][quantity]' min='0' /> 
+            <div class="invalid-feedback">Введіть кількість</div>
+          </div>
+        </div>
+        <!-- кінець одиниця виміру з ціною -->
     <br>
     <p>Оберіть категорію</p>
-    <ul class="list-group">
-                            <li class="list-group-item rounded-0">
-                                <div class="custom-control custom-checkbox">
-                                    <input class="custom-control-input" name='category' id="category1" type="checkbox">
-                                    <label class="cursor-pointer font-italic d-block custom-control-label" for="customCheck1">Чай</label>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="custom-control custom-checkbox">
-                                    <input class="custom-control-input" name='category' id="category2" type="checkbox">
-                                    <label class="cursor-pointer font-italic d-block custom-control-label" for="customCheck2">Пуер</label>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="custom-control custom-checkbox">
-                                    <input class="custom-control-input" name='category' id="category3" type="checkbox">
-                                    <label class="cursor-pointer font-italic d-block custom-control-label" for="customCheck3">Червоний</label>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="custom-control custom-checkbox">
-                                    <input class="custom-control-input" name='category' id="category4" type="checkbox">
-                                    <label class="cursor-pointer font-italic d-block custom-control-label" for="customCheck4">Зелений</label>
-                                </div>
-                            </li>
-                            <li class="list-group-item rounded-0">
-                                <div class="custom-control custom-checkbox">
-                                    <input class="custom-control-input" name='category' id="category5" type="checkbox">
-                                    <label class="cursor-pointer font-italic d-block custom-control-label" for="customCheck5">Білий</label>
-                                </div>
-                            </li>
-                        </ul>
+    <?php foreach($data['categories'] as $category): ?>
+    <div class="form-check">
+  <input class="form-check-input" name='categories[]' type="checkbox" value="<?=$category['id']?>" id='<?=$category['id']?>'>
+  <label class="form-check-label" for="<?=$category['id']?>">
+  <?=$category['name'] ?>
+  </label>
+</div>                           
+    <?php endforeach ?>
     <hr>
     <button class="w-100 btn btn-primary btn-lg" type="submit">Зберегти</button>
   </form>
