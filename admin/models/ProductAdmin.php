@@ -17,8 +17,14 @@ class ProductAdmin extends Model{
         return $result;
     }
 
-    public function getItem($id){
-        echo 'view';
+    public function getItem($product_id){
+        $sql="SELECT `product`.`id` as 'product_id',`product`.`name` as 'product_name',`product`.`year`,`product`.`description`,`status_product`.`name` as 'status' FROM `product` LEFT JOIN `status_product` ON `product`.`status_id`=`status_product`.`id` WHERE `product`.`id`=:product_id";
+        $data=array(
+            'product_id'=>$product_id
+        );
+        $select=$this->db->prepare($sql);
+        $select->execute($data);
+        return $result=$select->fetchAll();
     }
 
     public function save(array $data){
@@ -140,6 +146,8 @@ class ProductAdmin extends Model{
     public function delete($id){
         echo 'delete';
     }
+
+    
 
 
 

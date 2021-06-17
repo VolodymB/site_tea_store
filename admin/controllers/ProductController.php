@@ -4,6 +4,7 @@
     require_once 'models/StatusProductAdmin.php';
     require_once 'models/CategoryAdmin.php';
     require_once 'models/UnitAdmin.php';
+    require_once 'models/CommentsAdmin.php';
     // require_once './catalog/controllers/ProductController.php';
 
 class ProductController extends Controller{
@@ -29,10 +30,92 @@ class ProductController extends Controller{
     }
 
     public function view($data){
-        $product=new ProductAdmin();
-       return $product->view($data['id']);
+        
+        if(isset($data['id']) && !empty($data['id'])){
+            $info=array();
+            $product_id=$data['id'];
+            $product=new ProductAdmin();
+            $info['product']=$product->getItem($product_id);
+            // array(1) {
+            //     [0]=>
+            //     array(5) {
+            //       ["product_id"]=>
+            //       int(2)
+            //       ["product_name"]=>
+            //       string(28) "Дзюнь Дзюнь Мей"
+            //       ["year"]=>
+            //       int(2020)
+            //       ["description"]=>
+            //       NULL
+            //       ["status"]=>
+            //       string(21) "в наявності"
 
+
+
+            $units=new UnitAdmin();
+            $info['unit']=$units->getUnitById($product_id);
+            // foreach($units->getUnitById($product_id) as $unit){
+            //     $info['unit']=$unit;            
+            // }
+
+            // array(2) {
+            //     [0]=>
+            //     array(5) {
+            //       ["product_id"]=>
+            //       int(2)
+            //       ["unit_id"]=>
+            //       int(2)
+            //       ["price"]=>
+            //       float(300)
+            //       ["quantity"]=>
+            //       int(5)
+            //       ["unit_name"]=>
+            //       string(8) "0,1 кг"
+            //     }
+
+            
+                $category=new CategoryAdmin();
+                $info['category']=$category->getCategoryById($product_id);
+                // array(2) {
+                //     [0]=>
+                //     array(1) {
+                //       ["name"]=>
+                //       string(23) "Червоний чай"
+            
+                // Коментарі
+                $comments=new CommentsAdmin();
+                $info['comments']=$comments->getCommetsByProductId($product_id);
+                // array(4) {
+            //     ["name"]=>
+            //     string(10) "Rita Homer"
+            //     ["user_id"]=>
+            //     int(2)
+            //     ["comment"]=>
+            //     string(9) "Very Good"
+            //     ["raiting"]=>
+            //     int(5)
+            // }
+
+
+
+                // echo '<pre>'; 
+                // var_dump($info['comments']);
+                // echo '</pre>';
+                // die;
+            
+
+
+           
+        
+       
+        
+        
+       return $this->view->render('view',$info);
+
+        
+        }
     }
+
 
     public function create(){        
         $product=new ProductAdmin();
@@ -44,7 +127,7 @@ class ProductController extends Controller{
 
     }
 
-    public function update(){
+    public function update(){;
         $product=new ProductAdmin();
        return $product->update();
     }
