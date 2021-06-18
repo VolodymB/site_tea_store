@@ -13,7 +13,7 @@ $routes=array(
     '/filter'=>'product/filter',
     '/login'=>'index/login',
     '/logout'=>'index/logout',
-    '/update'=>'product/update',
+    '/edit_product'=>'product/update',
     '/delete'=>'product/delete',
     '/add_product'=>'product/create',
     

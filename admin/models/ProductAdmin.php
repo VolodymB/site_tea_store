@@ -18,7 +18,7 @@ class ProductAdmin extends Model{
     }
 
     public function getItem($product_id){
-        $sql="SELECT `product`.`id` as 'product_id',`product`.`name` as 'product_name',`product`.`year`,`product`.`description`,`status_product`.`name` as 'status' FROM `product` LEFT JOIN `status_product` ON `product`.`status_id`=`status_product`.`id` WHERE `product`.`id`=:product_id";
+        $sql="SELECT `product`.`id` as 'product_id',`product`.`name` as 'product_name',`product`.`year`,`product`.`description`,`status_product`.`name` as 'status',`product`.`status_id` FROM `product` LEFT JOIN `status_product` ON `product`.`status_id`=`status_product`.`id` WHERE `product`.`id`=:product_id";
         $data=array(
             'product_id'=>$product_id
         );
@@ -27,7 +27,7 @@ class ProductAdmin extends Model{
         return $result=$select->fetchAll();
     }
 
-    public function save(array $data){
+    public function save(array $data,$product_id=false){
         if(!empty($data)){ 
             // echo '<pre>';
             // var_dump($data);
@@ -40,16 +40,33 @@ class ProductAdmin extends Model{
                  * 3 запис таблиці product_category 
                  * повертається true
                  */
-                $sql="INSERT INTO `product`(`name`, `year`, `description`, `status_id`) VALUES (:product_name,:product_year,:product_description,:status_id)";
                 $array=array(
                     'product_name'=>$this->name,
                     'product_year'=>$this->year,
                     'product_description'=>$this->description,
                     'status_id'=>$this->status
                 );
+                if(!$product_id){
+                    $sql="INSERT INTO `product`(`name`, `year`, `description`, `status_id`) VALUES (:product_name,:product_year,:product_description,:status_id)";
+                }else{
+                    $array['product_id']=$product_id;
+                    $sql="UPDATE `product` SET `name`=:product_name,`year`=:product_year,`description`=:product_description,`status_id`=:status_id WHERE `id`=:product_id";
+
+                }                
+                
                 $select=$this->db->prepare($sql);
                 if($select->execute($array)){
-                    $this->id=$this->db->lastInsertId();
+                    if(!$product_id){
+                        $this->id=$this->db->lastInsertId(); 
+                    }else{
+                        $this->id=$product_id; 
+                    }                  
+                    
+                    $sql="DELETE FROM `product_unit` WHERE `product_id`=:product_id";
+                    $select=$this->db->prepare($sql);
+                    $select->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+                    $select->execute();
+
                     $sql="INSERT INTO `product_unit`(`product_id`, `unit_id`, `price`, `quantity`) VALUES (:product_id,:unit_id,:price,:quantity)";
                     foreach($this->units as $unit){
                        $array=array(
@@ -62,7 +79,11 @@ class ProductAdmin extends Model{
                         if($select->execute($array)){
                                                         
                         }
-                    }    
+                    }   
+                    $sql="DELETE FROM `product_category` WHERE `product_id`=:product_id";
+                    $select=$this->db->prepare($sql);
+                    $select->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+                    $select->execute(); 
                         $sql="INSERT INTO `product_category`(`category_id`, `product_id`) VALUES (:category_id,:product_id)";
                             foreach($this->categories as $category){
                               $data=array(
@@ -71,18 +92,18 @@ class ProductAdmin extends Model{
                             );
                                 $select=$this->db->prepare($sql);
                                 if($select->execute($data)){
-                                    echo "Ваш товар збережено";
+                                    
                                 } 
                             }
                     
 
                     
-
+                            return true;
                 }
                 
             }
         }
-        
+        return false;
     }
 
     // array(6) {

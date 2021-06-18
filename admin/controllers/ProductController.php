@@ -32,10 +32,12 @@ class ProductController extends Controller{
     public function view($data){
         
         if(isset($data['id']) && !empty($data['id'])){
-            $info=array();
+            $data_page=array();
             $product_id=$data['id'];
             $product=new ProductAdmin();
-            $info['product']=$product->getItem($product_id);
+            $data_page['product']=$product->getItem($product_id);
+            // var_dump($data_page['product']);
+            // die;
             // array(1) {
             //     [0]=>
             //     array(5) {
@@ -53,7 +55,7 @@ class ProductController extends Controller{
 
 
             $units=new UnitAdmin();
-            $info['unit']=$units->getUnitById($product_id);
+            $data_page['unit']=$units->getUnitById($product_id);
             // foreach($units->getUnitById($product_id) as $unit){
             //     $info['unit']=$unit;            
             // }
@@ -75,7 +77,7 @@ class ProductController extends Controller{
 
             
                 $category=new CategoryAdmin();
-                $info['category']=$category->getCategoryById($product_id);
+                $data_page['category']=$category->getCategoryById($product_id);
                 // array(2) {
                 //     [0]=>
                 //     array(1) {
@@ -84,7 +86,7 @@ class ProductController extends Controller{
             
                 // Коментарі
                 $comments=new CommentsAdmin();
-                $info['comments']=$comments->getCommetsByProductId($product_id);
+                $data_page['comments']=$comments->getCommetsByProductId($product_id);
                 // array(4) {
             //     ["name"]=>
             //     string(10) "Rita Homer"
@@ -94,25 +96,8 @@ class ProductController extends Controller{
             //     string(9) "Very Good"
             //     ["raiting"]=>
             //     int(5)
-            // }
-
-
-
-                // echo '<pre>'; 
-                // var_dump($info['comments']);
-                // echo '</pre>';
-                // die;
-            
-
-
-           
-        
-       
-        
-        
-       return $this->view->render('view',$info);
-
-        
+            // }                                                   
+       return $this->view->render('view',$data_page);        
         }
     }
 
@@ -123,13 +108,26 @@ class ProductController extends Controller{
         // array(6) { ["name"]=> string(7) "dsfgjgk" ["year"]=> string(4) "2019" ["status"]=> string(1) "1" ["unit"]=> string(1) "1" ["price"]=> string(4) "34.5" ["categories"]=> array(3) { [0]=> string(1) "3" [1]=> string(1) "6" [2]=> string(2) "10" } }
         $product->save($_POST);
         // var_dump($product);
+        $info['action']='/add_product';
+
         return $this->view->render('form',$info);
 
     }
 
-    public function update(){;
-        $product=new ProductAdmin();
-       return $product->update();
+    public function update($data){
+        $data_page=array();
+        $data_page=$this->infoForm();
+        $data_page['product']=$this->findOne($data['id']);
+        $data_page['action']='/edit_product?id='.$data['id'];
+        if(isset($_POST['save'])){
+            $product=new ProductAdmin();
+            if($product->save($_POST,$data['id'])){
+                header("Location:/product?id=".$data['id']);
+            }
+
+        }
+        return $this->view->render('form',$data_page);
+
     }
 
     public function delete(){
@@ -155,6 +153,91 @@ class ProductController extends Controller{
         
 
        return $info;     
+    }
+
+    private function findOne($product_id){
+        $product=array();
+        $product=new ProductAdmin();
+            foreach($product->getItem($product_id) as $item){
+                $product=array(
+                    "product_id"=>$item['product_id'],
+                    "product_name"=>$item['product_name'],
+                    "year"=>$item['year'],
+                    "description"=>$item['description'],
+                    "status"=>$item['status'],
+                    'status_id'=>$item['status_id']
+                );
+            }
+            // var_dump($data_page['product']);
+            // die;
+            // array(1) {
+            //     [0]=>
+            //     array(5) {
+            //       ["product_id"]=>
+            //       int(2)
+            //       ["product_name"]=>
+            //       string(28) "Дзюнь Дзюнь Мей"
+            //       ["year"]=>
+            //       int(2020)
+            //       ["description"]=>
+            //       NULL
+            //       ["status"]=>
+            //       string(21) "в наявності"
+
+
+
+            $units=new UnitAdmin();
+            $product['units']=$units->getUnitById($product_id);
+            // foreach($units->getUnitById($product_id) as $unit){
+            //     $info['unit']=$unit;            
+            // }
+
+            // array(2) {
+            //     [0]=>
+            //     array(5) {
+            //       ["product_id"]=>
+            //       int(2)
+            //       ["unit_id"]=>
+            //       int(2)
+            //       ["price"]=>
+            //       float(300)
+            //       ["quantity"]=>
+            //       int(5)
+            //       ["unit_name"]=>
+            //       string(8) "0,1 кг"
+            //     }
+
+            
+                $category=new CategoryAdmin();
+                $product['categories']=$category->getCategoryById($product_id);
+                $product['categories_id']=array();
+                foreach($product['categories'] as $category){
+                    $product['categories_id'][]=$category['category_id'];
+                }
+                // array(2) {
+                //     [0]=>
+                //     array(1) {
+                //       ["name"]=>
+                //       string(23) "Червоний чай"
+            
+                // Коментарі
+                $comments=new CommentsAdmin();
+                $product['comments']=$comments->getCommetsByProductId($product_id);
+                // array(4) {
+            //     ["name"]=>
+            //     string(10) "Rita Homer"
+            //     ["user_id"]=>
+            //     int(2)
+            //     ["comment"]=>
+            //     string(9) "Very Good"
+            //     ["raiting"]=>
+            //     int(5)
+            // }
+
+            // echo '<pre>';
+            // var_dump($product);
+            // echo '</pre>';  
+        return $product;
     }
 
 

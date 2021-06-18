@@ -1,4 +1,5 @@
-<div class="card" style="width: 50rem;">
+<div class="container">
+<div class="card" >
   <img src="..." class="card-img-top" alt="...">
   <div class="card-body">
     <h2 class="card-title"><?=$data['product'][0]['product_name'].', '.$data['product'][0]['year'].'-'.'наявність'.'-'.$data['product'][0]['status']?></h2>
@@ -18,11 +19,24 @@
         <p class="card-text">Не має опису товару</p>
     <?php } ?>
     <!-- Одниця виміру -->
-    <ul class="list-group">
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Одиниця виміру</th>
+      <th scope="col">Ціна, грн</th>
+      <th scope="col">Кількість</th>
+    </tr>
+  </thead>
+  <tbody>
     <?php foreach($data['unit'] as $unit): ?>
-  <li class="list-group-item"><?=$unit['unit_name'].'-'.$unit['price'].' '.грн.'.'.'-'.$unit['quantity'].' '.'одиниць'?></li>
+  <tr>
+  <td><?=$unit['unit_name']?></td>
+  <td><?=$unit['price']?></td>
+  <td><?=$unit['quantity']?></td>
+  </tr>
   <?php endforeach; ?>
-</ul>
+  </tbody>
+</table>
     <!--коментарі для товару  -->
     <?php if(!empty($data['comments'])){ ?>   
     <table class="table">
@@ -51,4 +65,5 @@
         <?php } ?>
     <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
   </div>
+</div>
 </div>
