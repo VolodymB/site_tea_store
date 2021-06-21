@@ -1,20 +1,31 @@
+
 <div class="container">
 <div class="card" >
   <img src="..." class="card-img-top" alt="...">
   <div class="card-body">
-    <h2 class="card-title"><?=$data['product'][0]['product_name'].', '.$data['product'][0]['year'].'-'.'наявність'.'-'.$data['product'][0]['status']?></h2>
+  <tr>
+<ul class="list-inline m-0">
+                      <li class="list-inline-item">
+                      <a class="btn btn-success btn-sm rounded-0" href="/edit_product?id=<?=$data['product']['product_id']?>" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
+                      </li>
+                      <li class="list-inline-item">
+                      <a class="btn btn-danger btn-sm rounded-0" href="/delete_product?id=<?=$data['product']['product_id']?>" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
+                      </li>
+                </ul>
+</tr>
+    <h2 class="card-title"><?=$data['product']['product_name'].', '.$data['product']['year'].'-'.'наявність'.'-'.$data['product']['status']?></h2>
     <hr>
     <!-- Категорії Товару -->
     <p>Категорії товару</p>
     <ul>
-    <?php foreach($data['category'] as $category): ?>
+    <?php foreach($data['product']['categories'] as $category): ?>
     <!-- створити посилання на фільтр?  -->
     <li><?=$category['name']?></li>
     <?php endforeach; ?>
     </ul>
     <!-- опис товару -->
-    <?php if($data['product'][0]['description']){?>
-        <p class="card-text"><?=$data['product'][0]['description']?></p>
+    <?php if($data['product']['description']){?>
+        <p class="card-text"><?=$data['product']['description']?></p>
     <?php }else{ ?>
         <p class="card-text">Не має опису товару</p>
     <?php } ?>
@@ -28,7 +39,7 @@
     </tr>
   </thead>
   <tbody>
-    <?php foreach($data['unit'] as $unit): ?>
+    <?php foreach($data['product']['units'] as $unit): ?>
   <tr>
   <td><?=$unit['unit_name']?></td>
   <td><?=$unit['price']?></td>
@@ -38,7 +49,7 @@
   </tbody>
 </table>
     <!--коментарі для товару  -->
-    <?php if(!empty($data['comments'])){ ?>   
+    <?php if(!empty($data['product']['comments'])){ ?>   
     <table class="table">
   <thead>
     <tr>
@@ -50,7 +61,7 @@
   </thead>
   <tbody>
   <?php $i=1 ?>
-  <?php foreach($data['comments'] as $comment):?>  
+  <?php foreach($data['product']['comments'] as $comment):?>  
     <tr>
       <th scope="row"><?=$i++?></th>
       <td><?=$comment['name']?></td>

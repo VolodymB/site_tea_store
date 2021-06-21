@@ -29,74 +29,87 @@ class ProductController extends Controller{
 
     }
 
+    // public function view($data){
+        
+    //     if(isset($data['id']) && !empty($data['id'])){
+    //         $data_page=array();
+    //         $product_id=$data['id'];
+    //         $product=new ProductAdmin();
+    //         $data_page['product']=$product->getItem($product_id);
+    //         // var_dump($data_page['product']);
+    //         // die;
+    //         // array(1) {
+    //         //     [0]=>
+    //         //     array(5) {
+    //         //       ["product_id"]=>
+    //         //       int(2)
+    //         //       ["product_name"]=>
+    //         //       string(28) "Дзюнь Дзюнь Мей"
+    //         //       ["year"]=>
+    //         //       int(2020)
+    //         //       ["description"]=>
+    //         //       NULL
+    //         //       ["status"]=>
+    //         //       string(21) "в наявності"
+
+
+
+    //         // $units=new UnitAdmin();
+    //         $data_page['unit']=$product->getUnitById($product_id);
+    //         // foreach($units->getUnitById($product_id) as $unit){
+    //         //     $info['unit']=$unit;            
+    //         // }
+
+    //         // array(2) {
+    //         //     [0]=>
+    //         //     array(5) {
+    //         //       ["product_id"]=>
+    //         //       int(2)
+    //         //       ["unit_id"]=>
+    //         //       int(2)
+    //         //       ["price"]=>
+    //         //       float(300)
+    //         //       ["quantity"]=>
+    //         //       int(5)
+    //         //       ["unit_name"]=>
+    //         //       string(8) "0,1 кг"
+    //         //     }
+
+            
+    //             // $category=new CategoryAdmin();
+    //             $data_page['category']=$product->getCategoryById($product_id);
+    //             // array(2) {
+    //             //     [0]=>
+    //             //     array(1) {
+    //             //       ["name"]=>
+    //             //       string(23) "Червоний чай"
+            
+    //             // Коментарі
+    //             // $comments=new CommentsAdmin();
+    //             $data_page['comments']=$product->getCommetsByProductId($product_id);
+    //             // array(4) {
+    //         //     ["name"]=>
+    //         //     string(10) "Rita Homer"
+    //         //     ["user_id"]=>
+    //         //     int(2)
+    //         //     ["comment"]=>
+    //         //     string(9) "Very Good"
+    //         //     ["raiting"]=>
+    //         //     int(5)
+    //         // }                                                   
+    //    return $this->view->render('view',$data_page);        
+    //     }
+    // }
+
     public function view($data){
         
         if(isset($data['id']) && !empty($data['id'])){
             $data_page=array();
             $product_id=$data['id'];
-            $product=new ProductAdmin();
-            $data_page['product']=$product->getItem($product_id);
-            // var_dump($data_page['product']);
-            // die;
-            // array(1) {
-            //     [0]=>
-            //     array(5) {
-            //       ["product_id"]=>
-            //       int(2)
-            //       ["product_name"]=>
-            //       string(28) "Дзюнь Дзюнь Мей"
-            //       ["year"]=>
-            //       int(2020)
-            //       ["description"]=>
-            //       NULL
-            //       ["status"]=>
-            //       string(21) "в наявності"
-
-
-
-            $units=new UnitAdmin();
-            $data_page['unit']=$units->getUnitById($product_id);
-            // foreach($units->getUnitById($product_id) as $unit){
-            //     $info['unit']=$unit;            
-            // }
-
-            // array(2) {
-            //     [0]=>
-            //     array(5) {
-            //       ["product_id"]=>
-            //       int(2)
-            //       ["unit_id"]=>
-            //       int(2)
-            //       ["price"]=>
-            //       float(300)
-            //       ["quantity"]=>
-            //       int(5)
-            //       ["unit_name"]=>
-            //       string(8) "0,1 кг"
-            //     }
-
-            
-                $category=new CategoryAdmin();
-                $data_page['category']=$category->getCategoryById($product_id);
-                // array(2) {
-                //     [0]=>
-                //     array(1) {
-                //       ["name"]=>
-                //       string(23) "Червоний чай"
-            
-                // Коментарі
-                $comments=new CommentsAdmin();
-                $data_page['comments']=$comments->getCommetsByProductId($product_id);
-                // array(4) {
-            //     ["name"]=>
-            //     string(10) "Rita Homer"
-            //     ["user_id"]=>
-            //     int(2)
-            //     ["comment"]=>
-            //     string(9) "Very Good"
-            //     ["raiting"]=>
-            //     int(5)
-            // }                                                   
+            // $product=new ProductAdmin();
+            $data_page['product']=$this->findOne($product_id);
+            // var_dump($data_page);
+            // die;                                                  
        return $this->view->render('view',$data_page);        
         }
     }
@@ -119,6 +132,10 @@ class ProductController extends Controller{
         $data_page=$this->infoForm();
         $data_page['product']=$this->findOne($data['id']);
         $data_page['action']='/edit_product?id='.$data['id'];
+        // echo '<pre>';
+        // var_dump($data_page);
+        // echo '</pre>';
+
         if(isset($_POST['save'])){
             $product=new ProductAdmin();
             if($product->save($_POST,$data['id'])){
@@ -130,9 +147,16 @@ class ProductController extends Controller{
 
     }
 
-    public function delete(){
-        $product=new ProductAdmin();
-        $product->delete();
+    public function delete($id){
+        $data=array();
+        if(isset($id)){
+            $product=new ProductAdmin();
+            $info=$this->findOne($id);
+            var_dump($info);
+            die;
+        $product->delete($data);
+        }
+        
     }
 
     public function infoForm(){
@@ -156,10 +180,10 @@ class ProductController extends Controller{
     }
 
     private function findOne($product_id){
-        $product=array();
+        $product_info=array();
         $product=new ProductAdmin();
             foreach($product->getItem($product_id) as $item){
-                $product=array(
+                $product_info=array(
                     "product_id"=>$item['product_id'],
                     "product_name"=>$item['product_name'],
                     "year"=>$item['year'],
@@ -168,6 +192,8 @@ class ProductController extends Controller{
                     'status_id'=>$item['status_id']
                 );
             }
+
+            
             // var_dump($data_page['product']);
             // die;
             // array(1) {
@@ -186,11 +212,12 @@ class ProductController extends Controller{
 
 
 
-            $units=new UnitAdmin();
-            $product['units']=$units->getUnitById($product_id);
+            // $units=new UnitAdmin();
+            $product_info['units']=$product->getUnitsById($product_id);
             // foreach($units->getUnitById($product_id) as $unit){
             //     $info['unit']=$unit;            
             // }
+           
 
             // array(2) {
             //     [0]=>
@@ -208,21 +235,22 @@ class ProductController extends Controller{
             //     }
 
             
-                $category=new CategoryAdmin();
-                $product['categories']=$category->getCategoryById($product_id);
-                $product['categories_id']=array();
-                foreach($product['categories'] as $category){
-                    $product['categories_id'][]=$category['category_id'];
+                // $category=new CategoryAdmin();
+                $product_info['categories']=$product->getCategoriesById($product_id);
+                $product_info['categories_id']=array();
+                foreach($product_info['categories'] as $category){
+                    $product_info['categories_id'][]=$category['category_id'];
                 }
                 // array(2) {
                 //     [0]=>
                 //     array(1) {
                 //       ["name"]=>
                 //       string(23) "Червоний чай"
+                
             
                 // Коментарі
-                $comments=new CommentsAdmin();
-                $product['comments']=$comments->getCommetsByProductId($product_id);
+                // $comments=new CommentsAdmin();
+                $product_info['comments']=$product->getCommetsByProductId($product_id);
                 // array(4) {
             //     ["name"]=>
             //     string(10) "Rita Homer"
@@ -234,10 +262,9 @@ class ProductController extends Controller{
             //     int(5)
             // }
 
-            // echo '<pre>';
-            // var_dump($product);
-            // echo '</pre>';  
-        return $product;
+            
+
+        return $product_info;
     }
 
 

@@ -14,8 +14,9 @@ $routes=array(
     '/login'=>'index/login',
     '/logout'=>'index/logout',
     '/edit_product'=>'product/update',
-    '/delete'=>'product/delete',
+    '/delete_product'=>'product/delete',
     '/add_product'=>'product/create',
+
     
     
 

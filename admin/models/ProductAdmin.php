@@ -1,5 +1,7 @@
 <?php
 
+
+
 class ProductAdmin extends Model{
     
     public $id;
@@ -26,6 +28,41 @@ class ProductAdmin extends Model{
         $select->execute($data);
         return $result=$select->fetchAll();
     }
+
+    public function getUnitsById($product_id){
+        $sql="SELECT `product_id`,`unit_id`,`price`,`quantity`,`unit`.`name` as 'unit_name' FROM `product_unit` LEFT JOIN `unit` ON `product_unit`.`unit_id`=`unit`.`id` WHERE `product_id`=:product_id";
+        $data=array(
+            'product_id'=>$product_id
+        );
+        $select=$this->db->prepare($sql);
+        $select->execute($data);
+        $result=$select->fetchAll();
+            return $result;
+        }
+
+        public function getCategoriesById($product_id){
+            $sql="SELECT `category`.`name`,`product_category`.`category_id` FROM `product_category`LEFT JOIN `category` ON `product_category`.`category_id`=`category`.`id` WHERE `product_id`=:product_id";
+            $data=array(
+              'product_id'=>$product_id
+            );
+            $select=$this->db->prepare($sql);
+            $select->execute($data);
+            return $result=$select->fetchAll();
+          //   return $result=$select->fetchAll();
+      
+          }
+
+          public function getCommetsByProductId($product_id){
+            $sql="SELECT CONCAT(`user`.`name`,' ',`user`.`surname`) as 'name',`comment`.`user_id`,`comment`.`comment`,`comment`.`raiting` FROM `comment` LEFT JOIN `user` ON `comment`.`user_id`=`user`.`id` WHERE `comment`.`product_id`=:product_id";
+            $data=array(
+                'product_id'=>$product_id
+            );
+            $select=$this->db->prepare($sql);
+            $select->execute($data);
+            return $result=$select->fetchAll();
+        }
+
+
 
     public function save(array $data,$product_id=false){
         if(!empty($data)){ 
@@ -164,8 +201,12 @@ class ProductAdmin extends Model{
 
     }
 
-    public function delete($id){
+    public function delete($data){
+        if(isset($product_id)){
+
         echo 'delete';
+        }
+        
     }
 
     
