@@ -40,5 +40,12 @@
         $this->user->logout();
         header("Location:/login");
     }
+
+    public function params(){
+        return $this->view->render('params');
+    }
+
+    
+
  }
 ?>

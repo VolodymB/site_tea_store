@@ -202,12 +202,71 @@ class ProductAdmin extends Model{
     }
 
     public function delete($data){
-        if(isset($product_id)){
+        
+        //delete commets
+        if(isset($data['comments']) && !empty($data['comments'])){
+            $sql="DELETE FROM `comment` WHERE `product_id`=:product_id";
+            $data=array(
+                'product_id'=>$data['product_id']
+            ); 
+            $select=$this->db->prepare($sql);
+            if(!$select->execute($data)){
+                echo 'comments';
+                return false;
+            }            
+            // var_dump($data['product_id']);
+            // die;
+        }
+
+        //delete category
+        if(isset($data['categories']) && !empty($data['categories'])){
+            $sql="DELETE FROM `product_category` WHERE `product_id`=:product_id";
+            $data=array(
+                'product_id'=>$data['product_id']
+            ); 
+            $select=$this->db->prepare($sql);
+            if(!$select->execute($data)){
+                echo 'categories';
+                return false;
+            }            
+        }
+
+        //delete units
+        if(isset($data['units']) && !empty($data['units'])){
+            $sql="DELETE FROM `product_unit` WHERE `product_id`=:product_id";
+            $data=array(
+                'product_id'=>$data['product_id']
+            ); 
+            $select=$this->db->prepare($sql);
+            if(!$select->execute($data)){
+                echo 'categories';
+                return false;
+            }            
+        }
+
+        //delete product
+        $sql="DELETE FROM `product` WHERE `id`=:product_id";
+            $data=array(
+                'product_id'=>$data['product_id']
+            ); 
+            $select=$this->db->prepare($sql);
+            if(!$select->execute($data)){
+                echo 'categories';
+                return false;
+            }
+            return true;            
+
+
+    //     echo '<pre>';
+    //     var_dump($data['categories']);
+    //    echo '</pre>';
+    //    die;
+        
 
         echo 'delete';
         }
         
-    }
+    
 
     
 

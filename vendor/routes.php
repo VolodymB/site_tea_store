@@ -16,6 +16,9 @@ $routes=array(
     '/edit_product'=>'product/update',
     '/delete_product'=>'product/delete',
     '/add_product'=>'product/create',
+    '/params'=>'index/params',
+    '/categories'=>'category/index',
+    '/units'=>'unit/index'
 
     
     

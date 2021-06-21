@@ -14,27 +14,27 @@
               </a>
             </li>
             <li>
-              <a href="#" class="nav-link text-white">
+              <a href="/params" class="nav-link text-white">
                 <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#speedometer2"/></svg>
-                Dashboard
+                Параметри
               </a>
             </li>
             <li>
               <a href="#" class="nav-link text-white">
                 <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#table"/></svg>
-                Orders
+                Замовлення
               </a>
             </li>
             <li>
               <a href="/products" class="nav-link text-white">
                 <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"/></svg>
-                Products
+                Товари
               </a>
             </li>
             <li>
               <a href="#" class="nav-link text-white">
                 <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#people-circle"/></svg>
-                Customers
+                Покупці
               </a>
             </li>
           </ul>

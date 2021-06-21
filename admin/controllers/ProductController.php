@@ -147,17 +147,27 @@ class ProductController extends Controller{
 
     }
 
-    public function delete($id){
-        $data=array();
-        if(isset($id)){
+    public function delete($data){
+        if(isset($data['id'])){
+            $product_id=$data['id'];
             $product=new ProductAdmin();
-            $info=$this->findOne($id);
-            var_dump($info);
-            die;
-        $product->delete($data);
+            $product_info=$this->findOne($product_id);
+            if(!empty($product_info)){
+                if($product->delete($product_info)){
+                header("Location:/products"); 
+                }
+            // echo '<pre>';
+            // var_dump($product);
+            // echo '</pre>';
+            // die;            
+            }
         }
-        
     }
+
+       
+        
+        
+  
 
     public function infoForm(){
         $info=array();
