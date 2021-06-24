@@ -177,6 +177,7 @@ class ProductController extends Controller{
 
        $categories=new CategoryAdmin();
        $info['categories']=$categories->getListCategories();
+       var_dump($info['categories']);
 
        $unit=new UnitAdmin();
        $info['units']=$unit->getListUnits();

@@ -18,7 +18,11 @@ $routes=array(
     '/add_product'=>'product/create',
     '/params'=>'index/params',
     '/categories'=>'category/index',
-    '/units'=>'unit/index'
+    '/units'=>'unit/index',
+    '/add_category'=>'category/create',
+    '/update_category'=>'category/update'
+
+
 
     
     
