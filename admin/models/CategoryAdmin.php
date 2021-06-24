@@ -36,30 +36,31 @@ class CategoryAdmin extends Model{
 
     }
 
-    public function save($data){
-        if(!empty($data)){
-            if($this->validation($data)){
-                    $array=array(
-                        'category_name'=>$this->name,
-                        'parent_name'=>$this->parent_name,
-                        'sort_order'=>$this->sort_order
-                    );
-                
-                if(!$category_id){
-                    $sql="INSERT INTO `category`(`name`, `parent_id`, `sort_order`) VALUES (:category_name,:parent_name,:sort_order)";
-                }else{
-                    var_dump($category_id);
-                    die;
-                    $array['id']=$category_id;
-                    $sql="UPDATE `category` SET `name`=:category_name,`parent_id`=parent_name,`sort_order`=:sort_order WHERE `id`=:id";
-                }
-                $select=$this->db->prepare($sql);
-                if($select->execute($array)){
-                    header("Location:/categories");
+    public function save(array $data,$category_id=false){ 
+        // array(5) { ["id"]=> string(2) "25" ["name"]=> string(23) "Червоний чай" ["parent_name"]=> string(1) "1" ["sort_order"]=> string(2) "44" ["save"]=> string(18) "Надіслати" }
+            if(!empty($data)){
+                if($this->validation($data)){
+                        $array=array(
+                            'category_name'=>$this->name,
+                            'parent_name'=>$this->parent_name,
+                            'sort_order'=>$this->sort_order
+                        );                    
+                    if(!$category_id){
+                        $sql="INSERT INTO `category`(`name`, `parent_id`, `sort_order`) VALUES (:category_name,:parent_name,:sort_order)";
+                    }else{
+                        $array['id']=$category_id;
+                        // var_dump($array);
+                        // die;
+                        $sql="UPDATE `category` SET `name`=:category_name,`parent_id`=:parent_name,`sort_order`=:sort_order WHERE `id`=:id";
+                    }
+                    $select=$this->db->prepare($sql);
+                    if($select->execute($array)){
+                        header("Location:/categories");
+                    }
                 }
             }
-        }  
-    }
+        }
+    
 
     public function validation(array $data){
         if(isset($data['name']) && !empty($data['name'])){
@@ -80,8 +81,48 @@ class CategoryAdmin extends Model{
         return true;
     }
 
+    public function getProductIdByCategoryId($category_id){
+        $sql="SELECT * FROM `product_category` WHERE `category_id`=:category_id";
+        $data=array(
+            'category_id'=>$category_id
+        );
+        $select=$this->db->prepare($sql);
+        $select->execute($data);
+        return $result=$select->fetchAll();
+    }
+
+    // public function delete($data){}
+    //             // array(2) { [0]=> array(4) { ["id"]=> int(16) ["name"]=> string(23) "Червоний чай" ["parent_id"]=> int(1) ["sort_order"]=> int(34) } ["products"]=> array(0) { } }
+    //             $category_id=$data[0]['id'];
+    //             if(empty($data['products']){}
+     public function delete($data){
+         $category_id=$data[0]['id'];
+         if(empty($data['products'])){
+             $sql="DELETE FROM `category` WHERE `id`=:category_id";
+             $data=array(
+                'category_id'=>$category_id
+             );
+             $select=$this->db->prepare($sql);
+             if($select->execute($data)){
+                 return true;
+             }
+         }else{
+             echo 'Не можливо видалити категорію';
+             header("Location:/categories");
+             
+         }
+     }   
+        
+    
+
 
 }
+            
+
+            
+
+
+
 
 
 ?>

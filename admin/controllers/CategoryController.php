@@ -17,7 +17,11 @@
     public function findOne($category_id){
         $category=new CategoryAdmin();
         $category_info=$category->getCategoryByCategoryId($category_id);
-        
+        $category_info['products']=$category->getProductIdByCategoryId($category_id);
+        // echo '<pre>';
+        // var_dump($category_info);
+        // echo '</pre>';
+        // die;
         return  $category_info;
     }
 
@@ -49,7 +53,9 @@
        
         // var_dump($data_page['categories']);
     
-        if(isset($_POST['save'])){            
+        if(isset($_POST['save'])){ 
+            // var_dump($_POST['save']) ;
+            // die;          
             if($category->save($_POST,$category_id)){
                 header("Location:/categories");
             }
@@ -60,6 +66,26 @@
         // echo '</pre>';
         return $this->view->render('category_form',$data_page);
     }
+
+    public function delete($data){
+        if(isset($data['id'])){
+            $category_id=$data['id'];
+            $category=new CategoryAdmin();
+            // array(1) { ["products"]=> array(1) { [0]=> array(4) { ["id"]=> int(8) ["name"]=> string(21) "Вязаний чай" ["parent_id"]=> int(1) ["sort_order"]=> int(8) } } }
+            $category_info=$this->findOne($category_id);
+            // echo '<pre>';
+            // var_dump($category_info);
+            // echo '</pre>';
+            if(!empty($category_info)){
+                if($category->delete($category_info)){
+                    header("Location:/categories");
+                }
+                return false;
+            }
+        }
+        }
+    
+
     
     
  }

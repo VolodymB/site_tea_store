@@ -20,7 +20,9 @@ $routes=array(
     '/categories'=>'category/index',
     '/units'=>'unit/index',
     '/add_category'=>'category/create',
-    '/update_category'=>'category/update'
+    '/update_category'=>'category/update',
+    '/delete_category'=>'category/delete'
+
 
 
 

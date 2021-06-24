@@ -7,7 +7,7 @@ $category=$data['category'][0];
 
 <!-- form -->
 <form action="" method='POST'> 
-        <input type="hidden" name='id'>
+        <input type="hidden" name='id' value='<?=(isset($category['id']))?$category['id']:''?>'>
         <div class="mb-3">
             <label for="" class="form-label">Назва</label>
             <input type="text" id="name" name="name" class="form-control" placeholder="Назва" value='<?=(isset($category['name']))?$category['name']:''?>'>
@@ -25,7 +25,8 @@ $category=$data['category'][0];
             <input type="number" id="sort_order" name="sort_order" class="form-control" placeholder="Сортування" min=0 value='<?=(isset($category['sort_order']))?$category['sort_order']:''?>'>
         </div>
     </div>
-    <button type="submit"  class="btn btn-primary" name='save'>Зберегти</button>
+    <input type="submit"  name='save'>
+    <!-- <button type="submit"  class="btn btn-primary" name='save'>Зберегти</button> -->
   <!-- form -->
 </form>
 <!-- форма кінець -->
