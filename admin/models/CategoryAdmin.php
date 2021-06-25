@@ -95,7 +95,9 @@ class CategoryAdmin extends Model{
     //             // array(2) { [0]=> array(4) { ["id"]=> int(16) ["name"]=> string(23) "Червоний чай" ["parent_id"]=> int(1) ["sort_order"]=> int(34) } ["products"]=> array(0) { } }
     //             $category_id=$data[0]['id'];
     //             if(empty($data['products']){}
-     public function delete($data){
+     
+    
+    public function delete($data){
          $category_id=$data[0]['id'];
          if(empty($data['products'])){
              $sql="DELETE FROM `category` WHERE `id`=:category_id";
