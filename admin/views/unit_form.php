@@ -13,7 +13,7 @@ $unit=$data['unit'][0];
             <input type="text" id="name" name="name" class="form-control" placeholder="Назва" value='<?=(isset($unit['name']))?$unit['name']:''?>'>
         </div>
     </div>
-    <input type="submit"  name='save'>
+    <input type="submit"  name='save' class="btn btn-primary" value="Продовжити">
     <!-- <button type="submit"  class="btn btn-primary" name='save'>Зберегти</button> -->
   <!-- form -->
 </form>

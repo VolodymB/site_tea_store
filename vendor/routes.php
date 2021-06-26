@@ -18,14 +18,16 @@ $routes=array(
     '/add_product'=>'product/create',
     '/params'=>'index/params',
     '/categories'=>'category/index',
-    '/units'=>'unit/index',
     '/add_category'=>'category/create',
     '/update_category'=>'category/update',
     '/delete_category'=>'category/delete',
     '/units'=>'units/index',
     '/add_unit'=>'units/create',
     '/update_unit'=>'units/update',
-    '/delete_unit'=>'units/delete'
+    '/delete_unit'=>'units/delete',
+    '/user_log_in'=>'user/log_in',
+    '/user_main'=>'user/index'
+
 
 
 

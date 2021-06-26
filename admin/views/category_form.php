@@ -25,7 +25,7 @@ $category=$data['category'][0];
             <input type="number" id="sort_order" name="sort_order" class="form-control" placeholder="Сортування" min=0 value='<?=(isset($category['sort_order']))?$category['sort_order']:''?>'>
         </div>
     </div>
-    <input type="submit"  name='save'>
+    <input type="submit"  name='save' value="Продовжти" class="btn btn-primary">
     <!-- <button type="submit"  class="btn btn-primary" name='save'>Зберегти</button> -->
   <!-- form -->
 </form>
