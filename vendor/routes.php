@@ -26,7 +26,12 @@ $routes=array(
     '/update_unit'=>'units/update',
     '/delete_unit'=>'units/delete',
     '/user_log_in'=>'user/log_in',
-    '/user_main'=>'user/index'
+    '/user_main'=>'user/index',
+    '/add_user'=>'user/create',
+    '/log_out'=>'user/log_out',
+    '/add_user'=>'user/create'
+
+
 
 
 
