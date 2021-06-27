@@ -29,7 +29,8 @@ $routes=array(
     '/user_main'=>'user/index',
     '/add_user'=>'user/create',
     '/log_out'=>'user/log_out',
-    '/add_user'=>'user/create'
+    '/add_user'=>'user/create',
+    '/user_update'=>'user/update'
 
 
 
