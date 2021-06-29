@@ -30,7 +30,9 @@ $routes=array(
     '/add_user'=>'user/create',
     '/log_out'=>'user/log_out',
     '/add_user'=>'user/create',
-    '/user_update'=>'user/update'
+    '/user_update'=>'user/update',
+    '/customers'=>'customer/index',
+    '/add_customer'=>'basket/add_customer',
 
 
 
