@@ -33,6 +33,8 @@ $routes=array(
     '/user_update'=>'user/update',
     '/customers'=>'customer/index',
     '/add_customer'=>'basket/add_customer',
+    '/update_customer'=>'customer/update',
+    '/delete_castomer'=>'customer/delete'
 
 
 
