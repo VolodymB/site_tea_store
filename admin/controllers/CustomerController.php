@@ -22,9 +22,10 @@ class CustomerController extends Controller{
             $data_page['payment']=$customer->getListPayment();
             $data_page['city']=$customer->getListCity();
 
-            // echo '<pre>';
-            // var_dump($data_page);
-            // echo '</pre>';
+            if(isset($_POST['save'])){
+                $customer->save($_POST);
+            }
+            
         }
         
         
@@ -34,12 +35,21 @@ class CustomerController extends Controller{
     public function findOne($id){
         if(isset($id)){
             $info=array();
-            $customer=new CustomerAdmin;
+            $customer=new CustomerAdmin();
             $info=$customer->getCustomerByCustomId($id);
             return $info;
-        }
-        
+        }        
+    }
 
+    public function delete($data){
+        if(isset($data['id'])){
+            $customer=new CustomerAdmin();
+            if($this->findOne($data['id'])){
+               if($customer->delete($data['id'])){
+                   header("Location:/customers");
+               }
+            }
+        }
         
     }
 

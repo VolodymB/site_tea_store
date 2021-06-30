@@ -34,7 +34,7 @@ $routes=array(
     '/customers'=>'customer/index',
     '/add_customer'=>'basket/add_customer',
     '/update_customer'=>'customer/update',
-    '/delete_castomer'=>'customer/delete'
+    '/delete_customer'=>'customer/delete'
 
 
 

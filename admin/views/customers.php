@@ -32,7 +32,7 @@
       <td>Без адреси</td>
       <?php } ?>
       <td><a class="btn btn-success btn-sm rounded-0" href="/update_customer?id=<?=$customer['id']?>" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a></td>
-      <td><a class="btn btn-danger btn-sm rounded-0" href="/delete_castomer?id=<?=$customer['id']?>" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a></td>
+      <td><a class="btn btn-danger btn-sm rounded-0" href="/delete_customer?id=<?=$customer['id']?>" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a></td>
       <?php endforeach; ?>      
     </tr>
   </tbody>
