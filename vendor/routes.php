@@ -32,9 +32,10 @@ $routes=array(
     '/add_user'=>'user/create',
     '/user_update'=>'user/update',
     '/customers'=>'customer/index',
-    '/add_customer'=>'basket/add_customer',
+    '/add_order'=>'order/add',
     '/update_customer'=>'customer/update',
-    '/delete_customer'=>'customer/delete'
+    '/delete_customer'=>'customer/delete',
+    '/users'=>'user/index'
 
 
 
