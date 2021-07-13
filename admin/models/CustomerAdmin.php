@@ -112,17 +112,27 @@ class CustomerAdmin extends Model{
         }
     }
 
-    public function delete($id){
-        if(isset($id)){
+    public function delete(int $id){
             $sql="DELETE FROM `customer` WHERE `id`=:id";
             $data=array(
                 'id'=>$id
             );
             $select=$this->db->prepare($sql);
             if($select->execute($data)){
-                return true;
-            }
+                return true;        
         }
+    }
+
+    public function getCustomer($customer_id){
+        $sql="SELECT * FROM `customer` WHERE `id`=:id";
+        $data=array(
+            'id'=>$customer_id
+        );
+        $select=$this->db->prepare($sql);
+        $select->execute($data);
+        $result=$select->fetch();
+        return $result;
+
     }
 
 }
