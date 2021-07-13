@@ -2,6 +2,10 @@
 require_once 'models/OrderAdmin.php';
 require_once 'models/CustomerAdmin.php';
 require_once 'models/ProductAdmin.php';
+require_once 'models/StatusOrderAdmin.php';
+require_once 'models/DeliveryAdmin.php';
+require_once 'models/PaymentAdmin.php';
+
 class OrderController extends Controller{
 
     public function index(){
@@ -47,7 +51,32 @@ class OrderController extends Controller{
             $customer->getCustomer($order_info['customer_id']);
             // array(6) { ["id"]=> int(44) ["user_id"]=> int(1) ["name"]=> string(4) "Mark" ["surname"]=> string(4) "Solo" ["email"]=> string(14) "emar@gmail.com" ["telephone"]=> string(15) "555555555555555" }
             $product=new ProductAdmin();
-            var_dump($customer->getCustomer($order_info['customer_id']));
+            // загальна сумма замовлень
+            $product->getOrderTotalSum($order_info['id']);
+            $product->getSumByProductByOrderId($order_info['id']);
+            $product->getSumByProductByOrderId($order_info['id']);               
+            // $product->getProductsByOrderId($order_info['id']);
+            foreach($product->getProductsByOrderId($order_info['id']) as $product){                
+                // array(2) { [0]=> array(5) { ["order_id"]=> int(33) ["product_id"]=> int(5) ["price"]=> float(250) ["quantity"]=> int(2) ["unit_id"]=> int(3) } [1]=> array(5) { ["order_id"]=> int(33) ["product_id"]=> int(7) ["price"]=> float(450) ["quantity"]=> int(1) ["unit_id"]=> int(5) } }
+                // array(5) { ["order_id"]=> int(33) ["product_id"]=> int(5) ["price"]=> float(250) ["quantity"]=> int(2) ["unit_id"]=> int(3) }
+                $product_item=new ProductAdmin();
+                // array(1) { [0]=> array(6) { ["product_id"]=> int(5) ["product_name"]=> string(15) "Лун Цзин" ["year"]=> int(2020) ["description"]=> NULL ["status"]=> string(34) "лише на замовлення" ["status_id"]=> int(3) } } array(1) { [0]=> array(6) { ["product_id"]=> int(7) ["product_name"]=> string(20) "Шен Пуер 2051" ["year"]=> int(2012) ["description"]=> NULL ["status"]=> string(21) "в наявності" ["status_id"]=> int(1) } }
+                $product_item->getItem($product['product_id']);
+            }
+
+            $status_order=new StatusOrderAdmin();
+            $status_order->getList();
+
+            $delivery=new DeliveryAdmin();
+            $delivery->getList();
+            
+            $payment=new PaymentAdmin();
+            $payment->getList();
+
+            
+
+
+            
         }
         
         

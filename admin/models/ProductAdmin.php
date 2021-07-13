@@ -265,6 +265,43 @@ class ProductAdmin extends Model{
 
         echo 'delete';
         }
+
+
+        public function getProductsByOrderId($order_id){
+            $sql="SELECT * FROM `product_order` WHERE `order_id`=:order_id";
+            $data=array(
+                'order_id'=>$order_id
+            );
+            $select=$this->db->prepare($sql);
+            $select->execute($data);
+            
+            $result=$select->fetchAll();
+           
+            return $result;
+        }
+
+        public function getOrderTotalSum($order_id){
+            $sql="SELECT SUM(`price`) as 'total_sum',`order_id`  FROM `product_order` WHERE `order_id`=:order_id GROUP BY `order_id`";
+            $data=array(
+                'order_id'=>$order_id
+            );
+            $select=$this->db->prepare($sql);
+            $select->execute($data);
+            $result=$select->fetch();
+            return $result;
+        }
+
+        public function getSumByProductByOrderId($order_id){
+            $sql="SELECT `product_id`,SUM(`price`) as 'total' FROM `product_order` WHERE `order_id`=:order_id GROUP BY `product_id`";
+            $data=array(
+                'order_id'=>$order_id
+            );
+            $select=$this->db->prepare($sql);
+            $select->execute($data);
+            $result=$select->fetchAll();
+            
+            return $result;
+        }
         
     
 

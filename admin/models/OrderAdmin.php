@@ -42,5 +42,10 @@ class OrderAdmin extends Model{
         $result=$select->fetch();
         return $result;
     }
+
+    
+
+
+
 }
 ?>
