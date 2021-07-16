@@ -5,6 +5,7 @@ require_once 'models/ProductAdmin.php';
 require_once 'models/StatusOrderAdmin.php';
 require_once 'models/DeliveryAdmin.php';
 require_once 'models/PaymentAdmin.php';
+require_once 'models/UnitAdmin.php';
 
 class OrderController extends Controller{
 
@@ -56,19 +57,29 @@ class OrderController extends Controller{
             // array(6) { ["id"]=> int(44) ["user_id"]=> int(1) ["name"]=> string(4) "Mark" ["surname"]=> string(4) "Solo" ["email"]=> string(14) "emar@gmail.com" ["telephone"]=> string(15) "555555555555555" }
             $product=new ProductAdmin();
             // загальна сумма замовлень
-            $order_info['products']=$product->getOrderTotalSum($order_info['id']);
-            $order_info['total_sum']=$product->getSumByProductByOrderId($order_info['id']);
-            // $product->getSumByProductByOrderId($order_info['id']);               
-            // $product->getProductsByOrderId($order_info['id']);
-            $order_info['products_info']=$product->getProductsByOrderId($order_info['id']);
-            foreach($order_info['products_info'] as $product){                
+            $order_info['total_sum']=$product->getOrderTotalSum($order_info['id']);
+            
+            
+            $products_order=$product->getProductsByOrderId($order_info['id']);
+            foreach($products_order as $item){
+                $product_item=new ProductAdmin();                
                 // array(2) { [0]=> array(5) { ["order_id"]=> int(33) ["product_id"]=> int(5) ["price"]=> float(250) ["quantity"]=> int(2) ["unit_id"]=> int(3) } [1]=> array(5) { ["order_id"]=> int(33) ["product_id"]=> int(7) ["price"]=> float(450) ["quantity"]=> int(1) ["unit_id"]=> int(5) } }
                 // array(5) { ["order_id"]=> int(33) ["product_id"]=> int(5) ["price"]=> float(250) ["quantity"]=> int(2) ["unit_id"]=> int(3) }
-                $product_item=new ProductAdmin();
-                $order_info['product_total']=$product_item->getSumByProductByOrderId($order_info['id']);
+                
                 // array(1) { [0]=> array(6) { ["product_id"]=> int(5) ["product_name"]=> string(15) "Лун Цзин" ["year"]=> int(2020) ["description"]=> NULL ["status"]=> string(34) "лише на замовлення" ["status_id"]=> int(3) } } array(1) { [0]=> array(6) { ["product_id"]=> int(7) ["product_name"]=> string(20) "Шен Пуер 2051" ["year"]=> int(2012) ["description"]=> NULL ["status"]=> string(21) "в наявності" ["status_id"]=> int(1) } }
-                $order_info['product']=$product_item->getItem($product['product_id']);
+                $product_info=$product_item->getItem($item['product_id']);
+                $unit=new UnitAdmin();
+                $unit_info=$unit->getUnitByUnitId($item['unit_id']);                
+                $order_info['products'][]=array(
+                    'product_id'=>$product_info[0]['product_id'],
+                    'name'=>$product_info[0]['product_name'].', '.$product_info[0]['year'],
+                    'quantity'=>$item['quantity'],
+                    'unit'=>$unit_info[0]['name'],
+                    'price'=>$item['price'],
+                    'total'=>$item['quantity']*$item['price']
+                );
             }
+            
 
             $status_order=new StatusOrderAdmin();
             $order_info['status_order']=$status_order->getList();
@@ -87,12 +98,29 @@ class OrderController extends Controller{
 
 
             
+        }     
+    }
+    
+    public function update(){
+        if(isset($_POST['order_id'])){
+            $order=new OrderAdmin();
+            if($order->orderUpdate($_POST)){
+                header('location:/order?id='.$_POST["order_id"]);
+            }
         }
-        
-        
-        
-        
-    } 
+    }
+    
+    public function deleteProducts($data){
+        if(isset($data['order_id']) && !empty($data['order_id'])){
+            if(isset($data['product_id']) && !empty($data['product_id'])){
+                $order=new OrderAdmin();
+                if($order->deleteProducts($data)){
+                    header('location:/order?id='.$data["order_id"]);
+                }
+               
+            }
+        }
+    }
 
 
 }

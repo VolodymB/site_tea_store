@@ -43,7 +43,33 @@ class OrderAdmin extends Model{
         return $result;
     }
 
-    
+    public function orderUpdate($data){
+        $array=array(
+            'status_id'=>$data['status_order'],
+            'delivery_id'=>$data['delivery'],
+            'payment_id'=>$data['payment'],
+            'order_id'=>$data['order_id']
+        );
+        $sql="UPDATE `order` SET `status_id`=:status_id,`delivery_id`=:delivery_id,`payment_id`=:payment_id WHERE `id`=:order_id";
+        $select=$this->db->prepare($sql);
+        if($select->execute($array)){
+            return true;
+        }
+        return false;
+    }
+
+    public function deleteProducts($data){
+        $sql="DELETE FROM `product_order` WHERE `order_id`=:order_id AND `product_id`=:product_id";
+        $array=array(
+            'order_id'=>$data['order_id'],
+            'product_id'=>$data['product_id']
+        );
+        $select=$this->db->prepare($sql);
+        if($select->execute($array)){
+            return true;
+        }
+        return false;
+    }
 
 
 
