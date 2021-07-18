@@ -71,6 +71,19 @@ class OrderAdmin extends Model{
         return false;
     }
 
+    public function getOrderProduct($data){
+        $sql="SELECT CONCAT(`product`.`name`,' ',`product`.`year`) as 'name', `product_order`.`product_id`,`product_order`.`quantity`,`product_order`.`price`,`product_order`.`unit_id`,`unit`.`name` as 'unit_name',`product_unit`.`quantity` as 'total_quantity'  FROM `product_order` LEFT JOIN `product`  ON `product_order`.`product_id`=`product`.`id` LEFT JOIN `unit`  ON `product_order`.`unit_id`=`unit`.`id` LEFT JOIN `product_unit` ON `product_order`.`unit_id`=`product_unit`.`unit_id`  WHERE `product_order`.`order_id`=:order_id AND `product_order`.`product_id`=:product_id";
+        $array=array(
+            'product_id'=>$data['product_id'],
+            'order_id'=>$data['order_id']
+        );
+        $select=$this->db->prepare($sql);
+        $select->execute($array);
+        $result=$select->fetchAll();
+        return $result[0];
+        
+    }
+
 
 
 }

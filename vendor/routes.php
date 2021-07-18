@@ -39,7 +39,10 @@ $routes=array(
     '/orders'=>'order/index',
     '/order'=>'order/view',
     '/order_update'=>'order/update',
-    '/delete_product_order'=>'order/deleteProducts'
+    '/delete_product_order'=>'order/deleteProducts',
+    '/add_product_order'=>'order/addProduct',
+    '/edit_product_order'=>'order/updateOrder'
+
     
 
 

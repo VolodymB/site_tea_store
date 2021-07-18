@@ -122,6 +122,52 @@ class OrderController extends Controller{
         }
     }
 
+    public function addProduct($data){
+        if(isset($data['order_id']) && !empty($data['order_id'])){
+            return $this->view->render('add_product_order',$data_page);
+        }
+    }
+
+    public function updateOrder($data){
+        $data_page=$this->infoFormOrder($data);
+        if(!empty($_POST)){
+            $data_page['info']['quantity']=$_POST['quantity'];            
+            $data_page['total']=$_POST['quantity']*$_POST['price'];
+
+            
+        }    
+         
+        
+      return $this->view->render('update_order_product_form',$data_page);  
+    }
+    
+
+    //інформація для форми (осоновна інфо, інфо про одиниці виміру,)    
+    public function infoFormOrder($data){
+        if(isset($data['product_id']) && !empty($data['product_id'])){
+            if(isset($data['order_id']) && !empty($data['order_id'])){
+                $data_page=array();
+                $order=new OrderAdmin();
+                $data_page['info']=$order->getOrderProduct($data);
+            }
+
+            $data_page['order_id']=$data['order_id'];
+            $data_page['product_id']=$data['product_id'];
+
+            $product=new ProductAdmin();
+            $data_page['product_units']=$product->getUnitsById($data['product_id']);
+            
+            // echo '<pre>';
+            // var_dump($data_page);
+            // echo '</pre>';
+            // die;
+            return $data_page;
+
+        }
+    }
+
+    
+
 
 }
 ?>

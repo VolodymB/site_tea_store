@@ -81,12 +81,15 @@
                         <td><li class="list-inline-item">
                       <a class="btn btn-danger btn-sm rounded-0" href="/delete_product_order?product_id=<?=$product['product_id']?>&order_id=<?=$data['order']['id']?>" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
                       </li></td>
+                      <td><li class="list-inline-item">
+                      <a class="btn btn-success btn-sm rounded-0" href="/edit_product_order?product_id=<?=$product['product_id']?>&order_id=<?=$data['order']['id']?>" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
+                      </li></td>
                         <?php endforeach; ?>
                         </tr>
                         </tbody>
                     </table>
             </div>
-                    
+            <a href="/add_product_order?order_id=<?=$data['order']['id']?>" class="btn btn-primary">Додати</a>  
             </div>
         </div>
    </div>
