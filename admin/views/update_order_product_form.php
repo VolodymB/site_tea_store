@@ -7,7 +7,7 @@
     <tr>
       <th scope="col">Назва</th>
       <th scope="col">Кількість</th>
-      <th scope="col">Одиниця виміру</th>
+      <th scope="col">Одиниця виміру, ціна </th>
       <th scope="col">Сумма, грн</th>
     </tr>
   </thead>
@@ -24,11 +24,12 @@
         <?php endforeach; ?>
         </select>        
       </td>
-      <input type="text" name="price" value='<?=$unit['price']?>'>
+      <input type="hidden" name="price" value='<?=$unit['price']?>'>
       <td><input type="text" name='total' value="<?=$data['total']?>"></td>
       <td><button type="submit" form="update_products" name='update' class="btn btn-primary btn-sm">Оновити</button></td>
-    </tr>   
+    </tr>        
   </tbody>
 </table>
+<input type="submit" name='save' value='Зберегти' class="btn btn-primary btn-sm">
 </form>
 </div>

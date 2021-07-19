@@ -134,6 +134,18 @@ class OrderController extends Controller{
             $data_page['info']['quantity']=$_POST['quantity'];            
             $data_page['total']=$_POST['quantity']*$_POST['price'];
 
+            if(isset($_POST['save'])){
+                // array(7) { ["order_id"]=> string(2) "38" ["product_id"]=> string(1) "2" ["price"]=> string(3) "250" ["quantity"]=> string(1) "1" ["unit"]=> string(1) "3" ["total"]=> string(3) "250" ["save"]=> string(16) "Зберегти" 
+                
+                $order=new OrderAdmin();
+                // видалення старого запису
+                if($order->deleteProducts($data)){
+                    if($order->saveOrderProduct($_POST)){
+                        header('location:/order?id='.$_POST["order_id"]);
+                    }
+                }
+                
+            }
             
         }    
          
