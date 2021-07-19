@@ -131,8 +131,11 @@ class OrderController extends Controller{
     public function updateOrder($data){
         $data_page=$this->infoFormOrder($data);
         if(!empty($_POST)){
-            $data_page['info']['quantity']=$_POST['quantity'];            
-            $data_page['total']=$_POST['quantity']*$_POST['price'];
+            $data_page['info']['quantity']=$_POST['quantity'];
+            $data_page['info']['unit_id']=$_POST['unit'];  
+            $product=new ProductAdmin();
+            $price=$product->getPriceByProductIdUnitId($_POST);           
+            $data_page['total']=$_POST['quantity']*$price;
 
             if(isset($_POST['save'])){
                 // array(7) { ["order_id"]=> string(2) "38" ["product_id"]=> string(1) "2" ["price"]=> string(3) "250" ["quantity"]=> string(1) "1" ["unit"]=> string(1) "3" ["total"]=> string(3) "250" ["save"]=> string(16) "Зберегти" 
@@ -140,6 +143,7 @@ class OrderController extends Controller{
                 $order=new OrderAdmin();
                 // видалення старого запису
                 if($order->deleteProducts($data)){
+                    // створення нового
                     if($order->saveOrderProduct($_POST)){
                         header('location:/order?id='.$_POST["order_id"]);
                     }
