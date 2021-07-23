@@ -292,16 +292,28 @@ class ProductAdmin extends Model{
             return $result['total_sum'];
         }
 
-        public function getPriceByProductIdUnitId($data){
+        public function getPriceByProductIdUnitId($product_id,$unit_id){
             $sql="SELECT `price` FROM `product_unit` WHERE `product_id`=:product_id AND `unit_id`=:unit_id";
             $array=array(
-                'product_id'=>$data['product_id'],
-                'unit_id'=>$data['unit']
+                'product_id'=>$product_id,
+                'unit_id'=>$unit_id
             );
             $select=$this->db->prepare($sql);
             $select->execute($array);
             $result=$select->fetchColumn();
             return $result;
+        }
+
+        public function getProductUnitByUnitId($unit_id,$product_id){
+            $sql="SELECT * FROM `product_unit` WHERE `unit_id`=:unit_id AND `product_id`=:product_id";
+            $data=array(
+                'unit_id'=>$unit_id,
+                'product_id'=>$product_id
+            );
+            $select=$this->db->prepare($sql);
+            $select->execute($data);
+            $result=$select->fetchAll();
+            return $result[0];
         }
 
         

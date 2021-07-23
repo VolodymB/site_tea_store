@@ -28,19 +28,7 @@ class OrderController extends Controller{
     public function view($data){
         $data_page=array();
         if(isset($data['id']) && !empty($data['id'])){
-        $data_page['order']=$this->findOne($data['id']);
-        
-        // var_dump( $data_page['order']);
-        // die;
-        
-        $status_order=new StatusOrderAdmin();
-            $data_page['status_order']=$status_order->getList();
-
-            $delivery=new DeliveryAdmin();
-            $data_page['delivery']=$delivery->getList();
-            
-            $payment=new PaymentAdmin();
-            $data_page['payment']=$payment->getList(); 
+        $data_page['order']=$this->findOne($data['id']); 
             // echo '<pre>';
             // var_dump($data_page['order']);
             // echo '</pre>';
@@ -87,14 +75,21 @@ class OrderController extends Controller{
                     'name'=>$product_info[0]['product_name'].', '.$product_info[0]['year'],
                     'quantity'=>$item['quantity'],
                     'unit_id'=>$unit_info[0]['id'],
-                    'units'=>$product_item->getUnitsById($product_info[0]['product_id']),
+                    'unit'=>$unit_info[0]['name'],
                     'price'=>$item['price'],
                     'total'=>$item['quantity']*$item['price']
                 );
             }
             
 
+            $status_order=new StatusOrderAdmin();
+            $order_info['status_order']=$status_order->getList();
+
+            $delivery=new DeliveryAdmin();
+            $order_info['delivery']=$delivery->getList();
             
+            $payment=new PaymentAdmin();
+            $order_info['payment']=$payment->getList();
             // echo '<pre>';
             // var_dump($order_info);
             // echo '</pre>';
@@ -106,8 +101,6 @@ class OrderController extends Controller{
             
         }     
     }
-
-    
     
     public function update(){
         if(isset($_POST['order_id'])){
@@ -137,89 +130,6 @@ class OrderController extends Controller{
     }
 
     public function updateOrder($data){
-         
-        //  Валідація:
-        //  - чи передався $data['order_id'] і не пустий
-        if(isset($data['order_id']) && !empty($data['order_id'])){
-            $order_id=$data['order_id'];
-        }else{
-            return false;
-        }
-        // перевірка валідності дааних які були передані через форму методом POST
-        if(isset($_POST['updateProductOrder'])){
-            //  - чи передався product_id
-            if(isset($_POST['product_id']) && !empty($_POST['product_id'])){
-                $product_id=$_POST['product_id'];
-            }else{
-                return false;
-            }
-           //  - чи передалася кількість і якого типу дані передались
-           if(isset($_POST['quantity']) && $_POST['quantity']>0 ){
-                $quantity=$_POST['quantity'];
-            }else{
-                $quantity=1;
-            }
-            $product=new ProductAdmin();
-        //  - чи передався $unit_id        
-            if(isset($_POST['unit_id']) && $unit_id=filter_var($_POST['unit_id'],FILTER_VALIDATE_INT)){
-                //  - чи існує $unit_id у даного продукту 
-                if(!empty($unit_info=$product->getProductUnitByUnitId($unit_id,$product_id))){
-                    // чи є потрібна кільеість товару
-                    if($quantity>$unit_info['quantity']){
-                        $quantity=$unit_info['quantity'];
-                    }
-                    // пошук ціни по product_id і unit_id
-                    $price=$unit_info['price'];
-                }else{
-                    return false;
-                }             
-            }else{
-                return false;
-            }
-            // end validation  
-            if(isset($_POST['old_unit_id']) && $old_unit_id=filter_var($_POST['old_unit_id'],FILTER_VALIDATE_INT)){
-                // перевірка чи змінився unit_id
-            // не змінився
-                if($unit_id==$old_unit_id){
-                    // оновити інформацію по product_id and unit_Id
-                    $order=new OrderAdmin();
-                    // заповнити масив з данними
-                    $data_info=array(
-                        'order_id'=>$order_id,
-                        'product_id'=>$product_id,
-                        'price'=>$price,
-                        'quantity'=>$quantity,
-                        'unit_id'=>$unit_id
-                    );
-                    // видалити цей запис по order_id,unit_id,product_id
-                    if($order->deleteProductUnit( $order_id,$product_id,$unit_id)){
-                        // Додати новий
-                        if($order->saveOrderProduct($data_info)){
-                            header("Location:/order?id=$order_id");
-                        }
-                    }
-                    
-                }
-            // змінився
-            }
-            
-            
-        }
-        
-        
-        
-        
-
-            
-        var_dump($data);
-        echo '<hr>';
-        var_dump($_POST);
-
-
-    }
-     
-    
-    public function update_Order($data){
         $product_id=$data['product_id'];
         $order_id=$data['order_id'];
         $unit_id=$data['unit_id'];
@@ -228,8 +138,7 @@ class OrderController extends Controller{
         $product=new ProductAdmin(); 
         $price=$product->getPriceByProductIdUnitId($product_id,$unit_id);
 
-        if(isset($_POST['updateProductOrder'])){
-            
+        if(isset($_POST['update'])){ 
             if(isset($_POST['quantity']) && $_POST['quantity']>0 ){
                 $quantity=$_POST['quantity'];
             }else{
@@ -275,7 +184,7 @@ class OrderController extends Controller{
           
          
         
-      return $this->view->render('order',$data_page);  
+      return $this->view->render('update_order_product_form',$data_page);  
     }
     
 

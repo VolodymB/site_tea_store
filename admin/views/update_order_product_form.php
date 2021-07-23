@@ -32,5 +32,5 @@
 </table>
 <input type="submit" name='save' value='Зберегти' class="btn btn-primary btn-sm">
 </form>
-<a href="/order?id=<?=$data['order_id']?>"  class="btn btn-primary btn-sm">Повернутись до попереднього меню</a>
+<a href="/order?order_id=<?=$data['order_id']?>"  class="btn btn-primary btn-sm">Повернутись до попереднього меню</a>
 </div>

@@ -90,14 +90,36 @@ class OrderAdmin extends Model{
             'product_id'=>$data['product_id'],
             'price'=>$data['price'],
             'quantity'=>$data['quantity'],       
-            'unit_id'=>$data['unit']
+            'unit_id'=>$data['unit_id']
         );
+        // var_dump($array);
+        
         $select=$this->db->prepare($sql);
         if($select->execute($array)){
             return true;
         }
         return false;
 
+    }
+
+    /**
+     * видалення 1 запису з таблиці product_order
+     * вхідні параметри - int $order_id,int $product_id,int $unit_id
+     * return (bool)
+     */
+    public function deleteProductUnit( int $order_id,int $product_id,int $unit_id){
+        $sql="DELETE FROM `product_order` WHERE `order_id`=:order_id AND `product_id`=:product_id AND `unit_id`=:unit_id";
+        $array=array(
+            'order_id'=>$order_id,
+            'product_id'=>$product_id,
+            'unit_id'=>$unit_id
+        );
+        
+        $select=$this->db->prepare($sql);
+        if($select->execute($array)){
+            return true;
+        }
+        return false;
     }
 
 
