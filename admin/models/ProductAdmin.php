@@ -316,6 +316,27 @@ class ProductAdmin extends Model{
             return $result[0];
         }
 
+        /**
+         * для визначення інформаціїї про товари які є даному замовленні
+         * вхідні дані - order_id, product_id, unit_id
+         * на виході - кількість одниць товару 
+         */
+        public function getQuantityByIdPrIdUnId( $order_id, $product_id, $unit_id){
+            
+            $sql="SELECT `quantity` FROM `product_order` WHERE `order_id`=:order_id AND `product_id`=:product_id AND `unit_id`=:unit_id";
+            $data=array(
+                'order_id'=>$order_id,
+                'product_id'=>$product_id,
+                'unit_id'=>$unit_id                             
+            );
+            
+            $select=$this->db->prepare($sql);
+            $select->execute($data);
+            $result=$select->fetchColumn();
+        
+            return $result;
+        }
+
         
         
     

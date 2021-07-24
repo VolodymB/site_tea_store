@@ -41,7 +41,9 @@ $routes=array(
     '/order_update'=>'order/update',
     '/delete_product_order'=>'order/deleteProducts',
     '/add_product_order'=>'order/addProduct',
-    '/edit_product_order'=>'order/updateOrder'
+    '/edit_product_order'=>'order/updateOrder',
+    '/add_product_name'=>'order/addProductName'
+
 
     
 

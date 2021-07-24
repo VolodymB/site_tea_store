@@ -122,6 +122,25 @@ class OrderAdmin extends Model{
         return false;
     }
 
+    // запис в таблиці order_prduct по order_id, product_id,unit_id
+    public function createProductOrder($data){
+        $sql="INSERT INTO `product_order`(`order_id`, `product_id`, `price`, `quantity`, `unit_id`) VALUES (:order_id,:product_id,:price,:quantity,:unit_id)";
+        $array=array(
+            'order_id'=>$data['order_id'],
+            'product_id'=>$data['product_id'],
+            'price'=>$data['price'],
+            'quantity'=>$data['quantity'],
+            'unit_id'=>$data['unit_id']
+        );
+        $select=$this->db->prepare($sql);
+        if($select->execute($array)){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
 
 
 }

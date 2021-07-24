@@ -118,23 +118,160 @@ class OrderController extends Controller{
         }
     }
     
+    // Видалення товару із замовлення
     public function deleteProducts($data){
+        // перевірка чи передалася інформація 
+        // чи передався order_id
         if(isset($data['order_id']) && !empty($data['order_id'])){
-            if(isset($data['product_id']) && !empty($data['product_id'])){
-                $order=new OrderAdmin();
-                if($order->deleteProducts($data)){
-                    header('location:/order?id='.$data["order_id"]);
-                }
-               
-            }
+            // створення змінної order_id із значенням $data['order_id']
+            $order_id=$data['order_id'];
+            }else{
+            return false;
         }
+        // Чи передався product_id
+        if(isset($data['product_id']) && !empty($data['product_id'])){
+            // створення змінної product_id із значенням $data['product_id']
+            $product_id=$data['product_id'];
+            }else{
+            return false;
+        }
+        // Чи передався Unit id
+        if(isset($data['unit_id']) && !empty($data['unit_id'])){
+            // створення змінної product_id із значенням $data['product_id']
+            $unit_id=$data['unit_id'];
+            }else{
+            return false;
+        }
+        // якщо все нормально, видалення продукту із замовлення
+        $order=new OrderAdmin();
+        if($order->deleteProductUnit( $order_id,$product_id,$unit_id)){
+            // перенесення на сторінку 
+            header('location:/order?id='.$order_id);
+        }
+        
+    }
+    // для вибору назви і id товару
+    public function addProductName($data){
+        // чи правильно передалось order_id
+        if(isset($data['order_id']) && !empty($data['order_id'])){            
+            $order_id=$data['order_id'];
+            $data_page['order_id']=$order_id;
+            $product=new ProductAdmin();
+            // виведення переліку всіх товарів
+        $data_page['products']=$product->getList();
+        }
+        // якщо натиснута кнопка 
+        if(isset($_POST['next'])){
+            // перевірка чи існує і чи має цифрове значення product_id
+             if(isset($_POST['name']) && $product_id=filter_var($_POST['name'],FILTER_VALIDATE_INT)){
+                // перевірка чи існує товар по даному номеру
+                if($product->getItem($product_id)){
+                    // перехід на другу форму з показниками order_id & product_id                
+                    header("Location:/add_product_order?id=$order_id&product_id=$product_id");                
+                }                
+             }
+        }
+        
+        
+
+        return $this->view->render('add_product_name',$data_page);
     }
 
     public function addProduct($data){
-        if(isset($data['order_id']) && !empty($data['order_id'])){
-            return $this->view->render('add_product_order',$data_page);
+        // Перевірка чи передався order_id
+        if(isset($data['id']) && !empty($data['id'])){
+            $order_id=$data['id'];
         }
+        // Перевірка чи передався product_id
+        if(isset($data['product_id']) && !empty($data['product_id'])){
+            $product_id=$data['product_id'];
+        }
+
+        $data_page=array();
+        $product=new ProductAdmin();
+        
+        // $data_page['product']=$product->getItem($product_id);        
+        // $data_page['units']=$product->getUnitsById($product_id);
+
+        $data_page=array(
+            'order_id'=>$order_id,
+            'product_id'=>$product_id,
+            // основна інформація про товар(назва)
+            'product'=>$product->getItem($product_id),
+            // інфорамція про одиниці виміру
+            'units'=>$product->getUnitsById($product_id)
+        );
+        
+        // echo '<pre>';
+        // var_dump($data_page);
+        // echo '</pre>';
+        // die;
+        if(isset($_POST['save'])){
+            // початок валідаціїї
+            // валідація кількості
+            if(isset($_POST['quantity']) && $_POST['quantity']>0){
+                $quantity=$_POST['quantity'];
+            }else{
+                $quantity=1;
+            }
+            // перевірка одинці виміру на тип int
+            if(isset($_POST['unit_id']) && $unit_id=filter_var($_POST['unit_id'],FILTER_VALIDATE_INT)){ 
+                               
+                // перевірка на кількість товару
+                //  - чи існує $unit_id у даного продукту 
+                if(!empty($unit_info=$product->getProductUnitByUnitId($unit_id,$product_id))){
+                    // чи є потрібна кількість товару
+                    if($quantity>$unit_info['quantity']){
+                        $quantity=$unit_info['quantity'];
+                    }
+                    // пошук ціни по product_id і unit_id
+                    $price=$unit_info['price'];
+                }else{
+                    return false;
+                } 
+            }else{
+                return false;
+            }
+            // кінець валідації
+            // перевірка на дублювання
+            
+            if($order_quantity=$product->getQuantityByIdPrIdUnId($order_id, $product_id, $unit_id)){
+                // дублювання є
+                var_dump($order_quantity);
+                die;
+                // Дублювання не має
+            }else{
+                $info=array(
+                    'order_id'=>$order_id,
+                    'product_id'=>$product_id,
+                    'price'=>$price,
+                    'quantity'=>$quantity,
+                    'unit_id'=>$unit_id
+                );
+                $order=new OrderAdmin();
+                if($order->createProductOrder($info)){
+                    header("Location:/order?id=$order_id");
+                }
+            }
+                
+            
+            
+
+
+            
+        }
+
+         return $this->view->render('add_product_order',$data_page);
     }
+
+    //формування масиву значень для заповлення інформації про товар
+    /**
+     * назва
+     * одниця виміру
+     * кількості фактичної 
+     * 
+     *  */   
+    
 
     public function updateOrder($data){
          
@@ -217,6 +354,38 @@ class OrderController extends Controller{
 
 
     }
+
+    public function orderProductValidation(){
+        if(isset($_POST['product_id']) && !empty($_POST['product_id'])){
+            $product_id=$_POST['product_id'];
+        }else{
+            return false;
+        }
+       //  - чи передалася кількість і якого типу дані передались
+       if(isset($_POST['quantity']) && $_POST['quantity']>0 ){
+            $quantity=$_POST['quantity'];
+        }else{
+            $quantity=1;
+        }
+        $product=new ProductAdmin();
+    //  - чи передався $unit_id        
+        if(isset($_POST['unit_id']) && $unit_id=filter_var($_POST['unit_id'],FILTER_VALIDATE_INT)){
+            //  - чи існує $unit_id у даного продукту 
+            if(!empty($unit_info=$product->getProductUnitByUnitId($unit_id,$product_id))){
+                // чи є потрібна кільеість товару
+                if($quantity>$unit_info['quantity']){
+                    $quantity=$unit_info['quantity'];
+                }
+                // пошук ціни по product_id і unit_id
+                $price=$unit_info['price'];
+            }else{
+                return false;
+            }             
+        }else{
+            return false;
+        }
+        return true;
+    }
      
     
     public function update_Order($data){
@@ -279,29 +448,9 @@ class OrderController extends Controller{
     }
     
 
-    //інформація для форми (осоновна інфо, інфо про одиниці виміру,)    
-    public function infoFormOrder($data){
-        if(isset($data['product_id']) && !empty($data['product_id'])){
-            if(isset($data['order_id']) && !empty($data['order_id'])){
-                $data_page=array();
-                $order=new OrderAdmin();
-                $data_page['info']=$order->getOrderProduct($data);
-            }
+    
 
-            $data_page['order_id']=$data['order_id'];
-            $data_page['product_id']=$data['product_id'];
-
-            $product=new ProductAdmin();
-            $data_page['product_units']=$product->getUnitsById($data['product_id']);
-            
-            // echo '<pre>';
-            // var_dump($data_page);
-            // echo '</pre>';
-            // die;
-            return $data_page;
-
-        }
-    }
+     
 
     
 

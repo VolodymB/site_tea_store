@@ -89,7 +89,7 @@
                         <td><?=$product['price']?></td>       
                         <td><?=$product['total']?></td>
                         <td><li class="list-inline-item">
-                      <a class="btn btn-danger btn-sm rounded-0" href="/delete_product_order?product_id=<?=$product['product_id']?>&order_id=<?=$data['order']['id']?>" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
+                      <a class="btn btn-danger btn-sm rounded-0" href="/delete_product_order?product_id=<?=$product['product_id']?>&order_id=<?=$data['order']['id']?>&unit_id=<?=$unit['unit_id']?>" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
                       </li></td>
                       <td><li class="list-inline-item">
                       <button class="btn btn-success btn-sm rounded-0" type="submit" name='updateProductOrder' form='updateProductOrder' data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
@@ -100,7 +100,7 @@
                         </tbody>
                     </table>
             </div>
-            <a href="/add_product_order?order_id=<?=$data['order']['id']?>" class="btn btn-primary">Додати</a>  
+            <a href="/add_product_name?order_id=<?=$data['order']['id']?>" class="btn btn-primary">Додати</a>  
             </div>
         </div>
    </div>
