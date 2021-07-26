@@ -42,7 +42,8 @@ $routes=array(
     '/delete_product_order'=>'order/deleteProducts',
     '/add_product_order'=>'order/addProduct',
     '/edit_product_order'=>'order/updateOrder',
-    '/add_product_name'=>'order/addProductName'
+    '/add_product_name'=>'order/addProductName',
+    '/add_role'=>'user/addRole'
 
 
     

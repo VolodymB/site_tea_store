@@ -23,7 +23,7 @@ $users=$data['users'];
       <td><?=$user['email']?></td>
       <td><?=$user['login']?></td>         
       <td><?=(!empty($user['role_name']))?$user['role_name']:''?></td> 
-      <td><a href="#" class="btn btn-primary btn-lg disabled" tabindex="-1" role="button" aria-disabled="true">Primary link</a></td>      
+      <td><a href="/add_role?user_id=<?=$user['id']?>" class="btn btn-primary btn-lg"  role="button" >Cтатус</a></td>      
       <?php endforeach; ?>
     </tr>
   </tbody>
