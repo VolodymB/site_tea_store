@@ -207,52 +207,58 @@ class OrderController extends Controller{
         // echo '</pre>';
         // die;
         if(isset($_POST['save'])){
+            $unit_id=$_POST['unit_id'];
+            $quantity=$_POST['quantity'];
             // початок валідаціїї
-            // валідація кількості
-            if(isset($_POST['quantity']) && $_POST['quantity']>0){
-                $quantity=$_POST['quantity'];
-            }else{
-                $quantity=1;
-            }
-            // перевірка одинці виміру на тип int
-            if(isset($_POST['unit_id']) && $unit_id=filter_var($_POST['unit_id'],FILTER_VALIDATE_INT)){ 
-                               
-                // перевірка на кількість товару
-                //  - чи існує $unit_id у даного продукту 
-                if(!empty($unit_info=$product->getProductUnitByUnitId($unit_id,$product_id))){
-                    // чи є потрібна кількість товару
-                    if($quantity>$unit_info['quantity']){
-                        $quantity=$unit_info['quantity'];
-                    }
-                    // пошук ціни по product_id і unit_id
-                    $price=$unit_info['price'];
-                }else{
-                    return false;
-                } 
-            }else{
-                return false;
-            }
-            // кінець валідації
-            // перевірка на дублювання
-            
-            if($order_quantity=$product->getQuantityByIdPrIdUnId($order_id, $product_id, $unit_id)){
-                // дублювання є
-                var_dump($order_quantity);
-                die;
-                // Дублювання не має
-            }else{
-                $info=array(
+            if($info=$this->orderProductValidation($quantity,$unit_id,$product_id)){
+                $quantity=$info['quantity'];
+                $unit_id=$info['unit_id'];
+                $price=$info['price'];
+                $info_product=array(
                     'order_id'=>$order_id,
                     'product_id'=>$product_id,
-                    'price'=>$price,
-                    'quantity'=>$quantity,
+                    'price'=>$price,                
                     'unit_id'=>$unit_id
                 );
+                if($order_quantity=$product->getQuantityByIdPrIdUnId($order_id, $product_id, $unit_id)){
+                    // дублювання є
+                    $info_product['quantity']=$quantity+$order_quantity;                
+                    // Дублювання не має
+                }else{
+                    $info_product['quantity']=$quantity;              
+                }
                 $order=new OrderAdmin();
-                if($order->createProductOrder($info)){
+                if($order->createProductOrder($info_product)){
                     header("Location:/order?id=$order_id");
                 }
             }
+            // // валідація кількості
+            // if(isset($_POST['quantity']) && $_POST['quantity']>0){
+            //     $quantity=$_POST['quantity'];
+            // }else{
+            //     $quantity=1;
+            // }
+            // // перевірка одинці виміру на тип int
+            // if(isset($_POST['unit_id']) && $unit_id=filter_var($_POST['unit_id'],FILTER_VALIDATE_INT)){ 
+                               
+            //     // перевірка на кількість товару
+            //     //  - чи існує $unit_id у даного продукту 
+            //     if(!empty($unit_info=$product->getProductUnitByUnitId($unit_id,$product_id))){
+            //         // чи є потрібна кількість товару
+            //         if($quantity>$unit_info['quantity']){
+            //             $quantity=$unit_info['quantity'];
+            //         }
+            //         // пошук ціни по product_id і unit_id
+            //         $price=$unit_info['price'];
+            //     }else{
+            //         return false;
+            //     } 
+            // }else{
+            //     return false;
+            // }
+            // кінець валідації
+            // перевірка на дублювання
+            
                 
             
             
@@ -290,55 +296,44 @@ class OrderController extends Controller{
             }else{
                 return false;
             }
-           //  - чи передалася кількість і якого типу дані передались
-           if(isset($_POST['quantity']) && $_POST['quantity']>0 ){
-                $quantity=$_POST['quantity'];
-            }else{
-                $quantity=1;
-            }
-            $product=new ProductAdmin();
-        //  - чи передався $unit_id        
-            if(isset($_POST['unit_id']) && $unit_id=filter_var($_POST['unit_id'],FILTER_VALIDATE_INT)){
-                //  - чи існує $unit_id у даного продукту 
-                if(!empty($unit_info=$product->getProductUnitByUnitId($unit_id,$product_id))){
-                    // чи є потрібна кільеість товару
-                    if($quantity>$unit_info['quantity']){
-                        $quantity=$unit_info['quantity'];
+            $quantity=$_POST['quantity'];
+            $unit_id=$_POST['unit_id'];
+            // Валідація quantity та unit_id
+            if($info=$this->orderProductValidation($quantity,$unit_id,$product_id)){
+                $quantity=$info['quantity'];
+                $unit_id=$info['unit_id'];
+                $price=$info['price'];
+                if(isset($_POST['old_unit_id']) && $old_unit_id=filter_var($_POST['old_unit_id'],FILTER_VALIDATE_INT)){
+                    // перевірка чи змінився unit_id
+                // не змінився
+                    if($unit_id==$old_unit_id){
+                        // оновити інформацію по product_id and unit_Id
+                        $order=new OrderAdmin();
+                        // заповнити масив з данними
+                        $data_info=array(
+                            'order_id'=>$order_id,
+                            'product_id'=>$product_id,
+                            'price'=>$price,
+                            'quantity'=>$quantity,
+                            'unit_id'=>$unit_id
+                        );
+                        // видалити цей запис по order_id,unit_id,product_id
+                        if($order->deleteProductUnit( $order_id,$product_id,$unit_id)){
+                            // Додати новий
+                            if($order->saveOrderProduct($data_info)){
+                                header("Location:/order?id=$order_id");
+                            }
+                        }                        
                     }
-                    // пошук ціни по product_id і unit_id
-                    $price=$unit_info['price'];
-                }else{
-                    return false;
-                }             
-            }else{
-                return false;
-            }
-            // end validation  
-            if(isset($_POST['old_unit_id']) && $old_unit_id=filter_var($_POST['old_unit_id'],FILTER_VALIDATE_INT)){
-                // перевірка чи змінився unit_id
-            // не змінився
-                if($unit_id==$old_unit_id){
-                    // оновити інформацію по product_id and unit_Id
-                    $order=new OrderAdmin();
-                    // заповнити масив з данними
-                    $data_info=array(
-                        'order_id'=>$order_id,
-                        'product_id'=>$product_id,
-                        'price'=>$price,
-                        'quantity'=>$quantity,
-                        'unit_id'=>$unit_id
-                    );
-                    // видалити цей запис по order_id,unit_id,product_id
-                    if($order->deleteProductUnit( $order_id,$product_id,$unit_id)){
-                        // Додати новий
-                        if($order->saveOrderProduct($data_info)){
-                            header("Location:/order?id=$order_id");
-                        }
-                    }
-                    
+                // змінився
+                    var_dump($data);
+                    echo '<hr>';
+                    var_dump($_POST);
                 }
-            // змінився
             }
+
+       
+            
             
             
         }
@@ -348,30 +343,27 @@ class OrderController extends Controller{
         
 
             
-        var_dump($data);
-        echo '<hr>';
-        var_dump($_POST);
+        
 
 
     }
-
-    public function orderProductValidation(){
-        if(isset($_POST['product_id']) && !empty($_POST['product_id'])){
-            $product_id=$_POST['product_id'];
-        }else{
-            return false;
-        }
+    /**
+     * Валідація кількості та одниці виміру
+     * вхідні дані - кількість товару, одиниця виміру
+     * вихідні дані - масив(кількість, одниця виміру, ціна)
+     *      */
+    public function orderProductValidation($quantity,$unit_id,$product_id){
        //  - чи передалася кількість і якого типу дані передались
-       if(isset($_POST['quantity']) && $_POST['quantity']>0 ){
+       if(isset($quantity) && $quantity>0 ){
             $quantity=$_POST['quantity'];
         }else{
             $quantity=1;
         }
         $product=new ProductAdmin();
     //  - чи передався $unit_id        
-        if(isset($_POST['unit_id']) && $unit_id=filter_var($_POST['unit_id'],FILTER_VALIDATE_INT)){
+        if(isset($unit_id) && $unit_id_i=filter_var($unit_id,FILTER_VALIDATE_INT)){
             //  - чи існує $unit_id у даного продукту 
-            if(!empty($unit_info=$product->getProductUnitByUnitId($unit_id,$product_id))){
+            if(!empty($unit_info=$product->getProductUnitByUnitId($unit_id_i,$product_id))){
                 // чи є потрібна кільеість товару
                 if($quantity>$unit_info['quantity']){
                     $quantity=$unit_info['quantity'];
@@ -384,7 +376,13 @@ class OrderController extends Controller{
         }else{
             return false;
         }
-        return true;
+        $info=array(
+            'quantity'=>$quantity,
+            'unit_id'=>$unit_id_i,
+            'price'=>$price
+
+        );
+        return $info;
     }
      
     

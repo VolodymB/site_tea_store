@@ -22,7 +22,8 @@ $users=$data['users'];
       <td><?=$user['surname']?></td>
       <td><?=$user['email']?></td>
       <td><?=$user['login']?></td>         
-      <td><?=(!empty($user['role_name']))?$user['role_name']:''?></td>       
+      <td><?=(!empty($user['role_name']))?$user['role_name']:''?></td> 
+      <td><a href="#" class="btn btn-primary btn-lg disabled" tabindex="-1" role="button" aria-disabled="true">Primary link</a></td>      
       <?php endforeach; ?>
     </tr>
   </tbody>
