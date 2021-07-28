@@ -8,27 +8,31 @@ class CustomerController extends Controller{
        $data_page=array();
        $customer=new CustomerAdmin();
        $data_page['customers']=$customer->getCustomers();
-       
+    //    echo '<pre>';
+    //    var_dump($data_page['customers']);
+    //    echo '</pre>';
+    //    die;
        $this->view->render('customers',$data_page);
     }
 
     public function update($data){
-        if(isset($data)){
+        if(isset($data['id']) && !empty($data['id'])){
+            $custom_id=$data['id'];
+        }
+
             $data_page=array();
             $customer=new CustomerAdmin(); 
             
-            $data_page['customer']=$this->findOne($data['id']);
-            $data_page['delivery']=$customer->getListDelivery();
-            $data_page['payment']=$customer->getListPayment();
-            $data_page['city']=$customer->getListCity();
+            $data_page['customer']=$this->findOne($custom_id);
+        //    var_dump($data_page['customer']);
+        //    die;
 
             if(isset($_POST['save'])){
-                $customer->save($_POST);
-            }
-            
-        }
-        
-        
+                $form_info=$_POST;                 
+                   $customer->save($form_info); 
+                               
+            }             
+
         $this->view->render('customer_form',$data_page);
     }
 
@@ -37,6 +41,7 @@ class CustomerController extends Controller{
             $info=array();
             $customer=new CustomerAdmin();
             $info=$customer->getCustomerByCustomId($id);
+            
             return $info;
         }        
     }

@@ -3,13 +3,10 @@
   <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Доставка</th>
-      <th scope="col">Оплата</th>
       <th scope="col">Імя</th>
       <th scope="col">Фамілія</th>
       <th scope="col">email</th>
       <th scope="col">Телефон</th>
-      <th scope="col">Місто</th>
       <th scope="col">Адреса</th>
 
     </tr>
@@ -19,13 +16,10 @@
   <?php foreach($data['customers'] as $customer): ?>
     <tr>
       <th scope="row"><?=$i++ ?></th>
-      <td><?=$customer['delivery']?></td>
-      <td><?=$customer['payment']?></td>
       <td><?=$customer['name']?></td>
       <td><?=$customer['surname']?></td>
       <td><?=$customer['email']?></td>
       <td><?=$customer['telefone']?></td>
-      <td><?=$customer['city']?></td>
       <?php if(!empty($customer['adress'])){ ?>
       <td><?=$customer['adress']?></td>
       <?php }else{ ?>
