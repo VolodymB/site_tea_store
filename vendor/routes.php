@@ -43,7 +43,10 @@ $routes=array(
     '/add_product_order'=>'order/addProduct',
     '/edit_product_order'=>'order/updateOrder',
     '/add_product_name'=>'order/addProductName',
-    '/add_role'=>'user/addRole'
+    '/add_role'=>'user/addRole',
+    '/user_orders'=>'user/getUserOrders',
+    '/user_order_product'=>'user/getUserOrder'
+
 
 
     
